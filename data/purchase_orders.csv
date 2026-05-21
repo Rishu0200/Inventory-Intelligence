@@ -1,0 +1,225 @@
+po_number,po_date,supplier_id,supplier_name,sku_id,item_name,category,qty_ordered,unit,rate_per_unit_inr,po_value_inr,expected_delivery,actual_delivery,delay_days,status,remarks
+PO-2022-0001,07-09-2022,SUP-001,Mehta Wire Industries,TBP-001,Thali Basket Pipe,Finished Good,394,Pcs,393.33,154972.02,19-09-2022,19-09-2022,0,Delivered,On time
+PO-2022-0002,04-09-2022,SUP-002,Krishna Basket Works,PBP-001,Plate Basket Pipe,Finished Good,210,Pcs,356.84,74936.4,16-09-2022,15-09-2022,0,Delivered,On time
+PO-2022-0003,07-09-2022,SUP-003,Gupta Modular Systems,PNT-001,Pantry,Finished Good,114,Pcs,2166.91,247027.74,25-09-2022,27-09-2022,2,Delivered,Minor delay
+PO-2022-0004,06-09-2022,SUP-007,ATC Magic Corners,MGC-001,Magic Corner,Finished Good,18,Pcs,3979.58,71632.44,06-10-2022,04-10-2022,0,Delivered,On time
+PO-2022-0005,03-09-2022,SUP-RM-005,Papercraf Packaging,RM-CB-002,Couger Box (large),Raw Material,1786,pcs,17.14,30612.04,10-09-2022,09-09-2022,0,Delivered,On time
+PO-2022-0006,11-10-2022,SUP-003,Gupta Modular Systems,PNT-001,Pantry,Finished Good,113,Pcs,2282.73,257948.49,29-10-2022,28-10-2022,0,Delivered,On time
+PO-2022-0007,10-10-2022,SUP-005,Lakshmi Rolling Shutters,RSH-001,Rolling Shutter,Finished Good,33,Pcs,1847.29,60960.57,31-10-2022,02-11-2022,2,Delivered,Minor delay
+PO-2022-0008,10-10-2022,SUP-006,Patel Chimney Solutions,CHM-001,Chimney,Finished Good,22,Pcs,3312.2,72868.4,04-11-2022,10-11-2022,6,Delivered,Delayed 6d
+PO-2022-0009,12-10-2022,SUP-007,ATC Magic Corners,MGC-001,Magic Corner,Finished Good,12,Pcs,4237.51,50850.12,11-11-2022,11-11-2022,0,Delivered,On time
+PO-2022-0010,07-10-2022,SUP-RM-001,National Wire Suppliers,RM-WR-002,Wire Roll (SS),Raw Material,469,kg,138.76,65078.44,14-10-2022,15-10-2022,1,Delivered,On time
+PO-2022-0011,14-10-2022,SUP-RM-002,Chem Allied Industries,RM-CH-001,Chrome Chemical,Raw Material,186,ltr,319.44,59415.84,21-10-2022,21-10-2022,0,Delivered,On time
+PO-2022-0012,04-10-2022,SUP-RM-004,Shree Fittings Works,RM-FT-001,Fittings Assorted,Raw Material,2579,set,29,74791,11-10-2022,12-10-2022,1,Delivered,On time
+PO-2022-0013,16-10-2022,SUP-RM-005,Papercraf Packaging,RM-CB-001,Couger Box (small),Raw Material,2830,pcs,11.52,32601.6,23-10-2022,22-10-2022,0,Delivered,On time
+PO-2022-0014,13-11-2022,SUP-002,Krishna Basket Works,PBP-001,Plate Basket Pipe,Finished Good,476,Pcs,321.91,153229.16,25-11-2022,26-11-2022,1,Delivered,Minor delay
+PO-2022-0015,07-11-2022,SUP-004,Sharma Hardware Co.,HNG-001,Hinges,Finished Good,1110,Pcs,41.62,46198.2,17-11-2022,16-11-2022,0,Delivered,On time
+PO-2022-0016,08-11-2022,SUP-005,Lakshmi Rolling Shutters,RSH-001,Rolling Shutter,Finished Good,67,Pcs,1839.12,123221.04,29-11-2022,27-11-2022,0,Delivered,On time
+PO-2022-0017,01-11-2022,SUP-006,Patel Chimney Solutions,CHM-001,Chimney,Finished Good,24,Pcs,3461.24,83069.76,26-11-2022,25-11-2022,0,Delivered,On time
+PO-2022-0018,06-11-2022,SUP-007,ATC Magic Corners,MGC-001,Magic Corner,Finished Good,20,Pcs,4117.46,82349.2,06-12-2022,17-12-2022,11,Delivered,Delayed 11d
+PO-2022-0019,02-11-2022,SUP-RM-001,National Wire Suppliers,RM-WR-002,Wire Roll (SS),Raw Material,674,kg,153.2,103256.8,09-11-2022,08-11-2022,0,Delivered,On time
+PO-2022-0020,02-11-2022,SUP-RM-003,Plastex Packaging,RM-PL-001,Polythene Packing 50mu,Raw Material,257,kg,94.79,24361.03,09-11-2022,09-11-2022,0,Delivered,On time
+PO-2022-0021,15-11-2022,SUP-RM-004,Shree Fittings Works,RM-FT-001,Fittings Assorted,Raw Material,1683,set,28.26,47561.58,22-11-2022,23-11-2022,1,Delivered,On time
+PO-2022-0022,01-11-2022,SUP-RM-005,Papercraf Packaging,RM-CB-001,Couger Box (small),Raw Material,2570,pcs,11.71,30094.7,08-11-2022,07-11-2022,0,Delivered,On time
+PO-2022-0023,11-11-2022,SUP-RM-005,Papercraf Packaging,RM-CB-002,Couger Box (large),Raw Material,2012,pcs,17.74,35692.88,18-11-2022,19-11-2022,1,Delivered,On time
+PO-2022-0024,02-12-2022,SUP-002,Krishna Basket Works,PBP-001,Plate Basket Pipe,Finished Good,547,Pcs,329.4,180181.8,14-12-2022,15-12-2022,1,Delivered,Minor delay
+PO-2022-0025,08-12-2022,SUP-003,Gupta Modular Systems,PNT-001,Pantry,Finished Good,139,Pcs,2065.45,287097.55,26-12-2022,24-12-2022,0,Delivered,On time
+PO-2022-0026,07-12-2022,SUP-005,Lakshmi Rolling Shutters,RSH-001,Rolling Shutter,Finished Good,73,Pcs,1803.89,131683.97,28-12-2022,29-12-2022,1,Delivered,Minor delay
+PO-2022-0027,03-12-2022,SUP-007,ATC Magic Corners,MGC-001,Magic Corner,Finished Good,11,Pcs,3938.53,43323.83,02-01-2023,04-01-2023,2,Delivered,Minor delay
+PO-2022-0028,11-12-2022,SUP-RM-002,Chem Allied Industries,RM-CH-001,Chrome Chemical,Raw Material,192,ltr,331.79,63703.68,18-12-2022,18-12-2022,0,Delivered,On time
+PO-2022-0029,08-12-2022,SUP-RM-005,Papercraf Packaging,RM-CB-001,Couger Box (small),Raw Material,3574,pcs,12.71,45425.54,15-12-2022,16-12-2022,1,Delivered,On time
+PO-2023-0030,12-01-2023,SUP-002,Krishna Basket Works,PBP-001,Plate Basket Pipe,Finished Good,299,Pcs,331.99,99265.01,24-01-2023,23-01-2023,0,Delivered,On time
+PO-2023-0031,10-01-2023,SUP-003,Gupta Modular Systems,PNT-001,Pantry,Finished Good,139,Pcs,2143.48,297943.72,28-01-2023,09-02-2023,12,Delivered,Delayed 12d
+PO-2023-0032,08-01-2023,SUP-004,Sharma Hardware Co.,HNG-001,Hinges,Finished Good,533,Pcs,44.51,23723.83,18-01-2023,20-01-2023,2,Delivered,Minor delay
+PO-2023-0033,13-01-2023,SUP-005,Lakshmi Rolling Shutters,RSH-001,Rolling Shutter,Finished Good,57,Pcs,1712.28,97599.96,03-02-2023,01-02-2023,0,Delivered,On time
+PO-2023-0034,12-01-2023,SUP-007,ATC Magic Corners,MGC-001,Magic Corner,Finished Good,12,Pcs,4025.5,48306,11-02-2023,10-02-2023,0,Delivered,On time
+PO-2023-0035,16-01-2023,SUP-RM-001,National Wire Suppliers,RM-WR-002,Wire Roll (SS),Raw Material,681,kg,151.43,103123.83,23-01-2023,22-01-2023,0,Delivered,On time
+PO-2023-0036,15-01-2023,SUP-RM-003,Plastex Packaging,RM-PL-001,Polythene Packing 50mu,Raw Material,374,kg,94.49,35339.26,22-01-2023,21-01-2023,0,Delivered,On time
+PO-2023-0037,15-01-2023,SUP-RM-005,Papercraf Packaging,RM-CB-001,Couger Box (small),Raw Material,4464,pcs,11.49,51291.36,22-01-2023,21-01-2023,0,Delivered,On time
+PO-2023-0038,01-02-2023,SUP-001,Mehta Wire Industries,TBP-001,Thali Basket Pipe,Finished Good,479,Pcs,379.86,181952.94,13-02-2023,13-02-2023,0,Delivered,On time
+PO-2023-0039,11-02-2023,SUP-003,Gupta Modular Systems,PNT-001,Pantry,Finished Good,123,Pcs,2039.68,250880.64,01-03-2023,01-03-2023,0,Delivered,On time
+PO-2023-0040,06-02-2023,SUP-007,ATC Magic Corners,MGC-001,Magic Corner,Finished Good,17,Pcs,3959.7,67314.9,08-03-2023,06-03-2023,0,Delivered,On time
+PO-2023-0041,07-02-2023,SUP-RM-001,National Wire Suppliers,RM-WR-002,Wire Roll (SS),Raw Material,495,kg,139.56,69082.2,14-02-2023,14-02-2023,0,Delivered,On time
+PO-2023-0042,08-02-2023,SUP-RM-005,Papercraf Packaging,RM-CB-002,Couger Box (large),Raw Material,1804,pcs,17.94,32363.76,15-02-2023,15-02-2023,0,Delivered,On time
+PO-2023-0043,06-03-2023,SUP-001,Mehta Wire Industries,TBP-001,Thali Basket Pipe,Finished Good,400,Pcs,390.58,156232,18-03-2023,19-03-2023,1,Delivered,Minor delay
+PO-2023-0044,09-03-2023,SUP-002,Krishna Basket Works,PBP-001,Plate Basket Pipe,Finished Good,559,Pcs,332.78,186024.02,21-03-2023,23-03-2023,2,Delivered,Minor delay
+PO-2023-0045,11-03-2023,SUP-003,Gupta Modular Systems,PNT-001,Pantry,Finished Good,68,Pcs,2276.82,154823.76,29-03-2023,02-04-2023,4,Delivered,Delayed 4d
+PO-2023-0046,07-03-2023,SUP-004,Sharma Hardware Co.,HNG-001,Hinges,Finished Good,1458,Pcs,41.85,61017.3,17-03-2023,17-03-2023,0,Delivered,On time
+PO-2023-0047,02-03-2023,SUP-005,Lakshmi Rolling Shutters,RSH-001,Rolling Shutter,Finished Good,39,Pcs,1703.8,66448.2,23-03-2023,24-03-2023,1,Delivered,Minor delay
+PO-2023-0048,07-03-2023,SUP-007,ATC Magic Corners,MGC-001,Magic Corner,Finished Good,28,Pcs,4122.75,115437,06-04-2023,17-04-2023,11,Delivered,Delayed 11d
+PO-2023-0049,01-03-2023,SUP-RM-001,National Wire Suppliers,RM-WR-001,Wire Roll (MS),Raw Material,1022,kg,88.25,90191.5,08-03-2023,07-03-2023,0,Delivered,On time
+PO-2023-0050,11-03-2023,SUP-RM-003,Plastex Packaging,RM-PL-001,Polythene Packing 50mu,Raw Material,297,kg,97.21,28871.37,18-03-2023,18-03-2023,0,Delivered,On time
+PO-2023-0051,13-04-2023,SUP-003,Gupta Modular Systems,PNT-001,Pantry,Finished Good,87,Pcs,2106.41,183257.67,01-05-2023,02-05-2023,1,Delivered,Minor delay
+PO-2023-0052,05-04-2023,SUP-005,Lakshmi Rolling Shutters,RSH-001,Rolling Shutter,Finished Good,67,Pcs,1693.62,113472.54,26-04-2023,25-04-2023,0,Delivered,On time
+PO-2023-0053,03-04-2023,SUP-006,Patel Chimney Solutions,CHM-001,Chimney,Finished Good,47,Pcs,3523.19,165589.93,28-04-2023,12-05-2023,14,Delivered,Delayed 14d
+PO-2023-0054,04-04-2023,SUP-007,ATC Magic Corners,MGC-001,Magic Corner,Finished Good,21,Pcs,4104.73,86199.33,04-05-2023,04-05-2023,0,Delivered,On time
+PO-2023-0055,07-04-2023,SUP-RM-001,National Wire Suppliers,RM-WR-001,Wire Roll (MS),Raw Material,1665,kg,89.89,149666.85,14-04-2023,13-04-2023,0,Delivered,On time
+PO-2023-0056,15-04-2023,SUP-RM-001,National Wire Suppliers,RM-WR-002,Wire Roll (SS),Raw Material,613,kg,139.69,85629.97,22-04-2023,21-04-2023,0,Delivered,On time
+PO-2023-0057,16-04-2023,SUP-RM-002,Chem Allied Industries,RM-CH-001,Chrome Chemical,Raw Material,231,ltr,309.49,71492.19,23-04-2023,23-04-2023,0,Delivered,On time
+PO-2023-0058,05-05-2023,SUP-001,Mehta Wire Industries,TBP-001,Thali Basket Pipe,Finished Good,466,Pcs,389.1,181320.6,17-05-2023,29-05-2023,12,Delivered,Delayed 12d
+PO-2023-0059,02-05-2023,SUP-004,Sharma Hardware Co.,HNG-001,Hinges,Finished Good,639,Pcs,44.62,28512.18,12-05-2023,10-05-2023,0,Delivered,On time
+PO-2023-0060,07-05-2023,SUP-005,Lakshmi Rolling Shutters,RSH-001,Rolling Shutter,Finished Good,56,Pcs,1677.64,93947.84,28-05-2023,27-05-2023,0,Delivered,On time
+PO-2023-0061,11-05-2023,SUP-006,Patel Chimney Solutions,CHM-001,Chimney,Finished Good,28,Pcs,3645.73,102080.44,05-06-2023,07-06-2023,2,Delivered,Minor delay
+PO-2023-0062,01-05-2023,SUP-007,ATC Magic Corners,MGC-001,Magic Corner,Finished Good,23,Pcs,4386.86,100897.78,31-05-2023,01-06-2023,1,Delivered,Minor delay
+PO-2023-0063,16-05-2023,SUP-RM-001,National Wire Suppliers,RM-WR-002,Wire Roll (SS),Raw Material,604,kg,138.64,83738.56,23-05-2023,24-05-2023,1,Delivered,On time
+PO-2023-0064,14-05-2023,SUP-RM-003,Plastex Packaging,RM-PL-001,Polythene Packing 50mu,Raw Material,202,kg,93.85,18957.7,21-05-2023,21-05-2023,0,Delivered,On time
+PO-2023-0065,15-05-2023,SUP-RM-004,Shree Fittings Works,RM-FT-001,Fittings Assorted,Raw Material,1945,set,29.33,57046.85,22-05-2023,21-05-2023,0,Delivered,On time
+PO-2023-0066,15-05-2023,SUP-RM-005,Papercraf Packaging,RM-CB-002,Couger Box (large),Raw Material,2364,pcs,17.94,42410.16,22-05-2023,23-05-2023,1,Delivered,On time
+PO-2023-0067,10-06-2023,SUP-002,Krishna Basket Works,PBP-001,Plate Basket Pipe,Finished Good,283,Pcs,333.78,94459.74,22-06-2023,21-06-2023,0,Delivered,On time
+PO-2023-0068,10-06-2023,SUP-005,Lakshmi Rolling Shutters,RSH-001,Rolling Shutter,Finished Good,30,Pcs,1805.48,54164.4,01-07-2023,29-06-2023,0,Delivered,On time
+PO-2023-0069,03-06-2023,SUP-006,Patel Chimney Solutions,CHM-001,Chimney,Finished Good,50,Pcs,3282.3,164115,28-06-2023,30-06-2023,2,Delivered,Minor delay
+PO-2023-0070,07-06-2023,SUP-007,ATC Magic Corners,MGC-001,Magic Corner,Finished Good,10,Pcs,4315.13,43151.3,07-07-2023,08-07-2023,1,Delivered,Minor delay
+PO-2023-0071,15-06-2023,SUP-RM-001,National Wire Suppliers,RM-WR-002,Wire Roll (SS),Raw Material,461,kg,142.54,65710.94,22-06-2023,21-06-2023,0,Delivered,On time
+PO-2023-0072,10-06-2023,SUP-RM-004,Shree Fittings Works,RM-FT-001,Fittings Assorted,Raw Material,3050,set,28.59,87199.5,17-06-2023,17-06-2023,0,Delivered,On time
+PO-2023-0073,09-06-2023,SUP-RM-005,Papercraf Packaging,RM-CB-001,Couger Box (small),Raw Material,3837,pcs,11.88,45583.56,16-06-2023,15-06-2023,0,Delivered,On time
+PO-2023-0074,05-07-2023,SUP-001,Mehta Wire Industries,TBP-001,Thali Basket Pipe,Finished Good,589,Pcs,390.02,229721.78,17-07-2023,18-07-2023,1,Delivered,Minor delay
+PO-2023-0075,12-07-2023,SUP-002,Krishna Basket Works,PBP-001,Plate Basket Pipe,Finished Good,265,Pcs,315.39,83578.35,24-07-2023,24-07-2023,0,Delivered,On time
+PO-2023-0076,12-07-2023,SUP-003,Gupta Modular Systems,PNT-001,Pantry,Finished Good,55,Pcs,2127.29,117000.95,30-07-2023,29-07-2023,0,Delivered,On time
+PO-2023-0077,05-07-2023,SUP-006,Patel Chimney Solutions,CHM-001,Chimney,Finished Good,40,Pcs,3568.73,142749.2,30-07-2023,28-07-2023,0,Delivered,On time
+PO-2023-0078,02-07-2023,SUP-007,ATC Magic Corners,MGC-001,Magic Corner,Finished Good,20,Pcs,4340.35,86807,01-08-2023,31-07-2023,0,Delivered,On time
+PO-2023-0079,12-07-2023,SUP-RM-002,Chem Allied Industries,RM-CH-001,Chrome Chemical,Raw Material,162,ltr,309.06,50067.72,19-07-2023,20-07-2023,1,Delivered,On time
+PO-2023-0080,10-07-2023,SUP-RM-003,Plastex Packaging,RM-PL-001,Polythene Packing 50mu,Raw Material,282,kg,99.87,28163.34,17-07-2023,17-07-2023,0,Delivered,On time
+PO-2023-0081,07-07-2023,SUP-RM-004,Shree Fittings Works,RM-FT-001,Fittings Assorted,Raw Material,2930,set,29.05,85116.5,14-07-2023,13-07-2023,0,Delivered,On time
+PO-2023-0082,02-08-2023,SUP-006,Patel Chimney Solutions,CHM-001,Chimney,Finished Good,56,Pcs,3438.18,192538.08,27-08-2023,26-08-2023,0,Delivered,On time
+PO-2023-0083,06-08-2023,SUP-007,ATC Magic Corners,MGC-001,Magic Corner,Finished Good,27,Pcs,4190.32,113138.64,05-09-2023,06-09-2023,1,Delivered,Minor delay
+PO-2023-0084,10-08-2023,SUP-RM-001,National Wire Suppliers,RM-WR-002,Wire Roll (SS),Raw Material,488,kg,151.42,73892.96,17-08-2023,16-08-2023,0,Delivered,On time
+PO-2023-0085,08-08-2023,SUP-RM-002,Chem Allied Industries,RM-CH-001,Chrome Chemical,Raw Material,135,ltr,306.77,41413.95,15-08-2023,14-08-2023,0,Delivered,On time
+PO-2023-0086,16-08-2023,SUP-RM-005,Papercraf Packaging,RM-CB-001,Couger Box (small),Raw Material,2871,pcs,11.44,32844.24,23-08-2023,22-08-2023,0,Delivered,On time
+PO-2023-0087,05-09-2023,SUP-002,Krishna Basket Works,PBP-001,Plate Basket Pipe,Finished Good,467,Pcs,346.15,161652.05,17-09-2023,17-09-2023,0,Delivered,On time
+PO-2023-0088,04-09-2023,SUP-005,Lakshmi Rolling Shutters,RSH-001,Rolling Shutter,Finished Good,31,Pcs,1690.06,52391.86,25-09-2023,25-09-2023,0,Delivered,On time
+PO-2023-0089,10-09-2023,SUP-007,ATC Magic Corners,MGC-001,Magic Corner,Finished Good,27,Pcs,4290.32,115838.64,10-10-2023,09-10-2023,0,Delivered,On time
+PO-2023-0090,01-09-2023,SUP-RM-002,Chem Allied Industries,RM-CH-001,Chrome Chemical,Raw Material,142,ltr,313.92,44576.64,08-09-2023,09-09-2023,1,Delivered,On time
+PO-2023-0091,07-09-2023,SUP-RM-005,Papercraf Packaging,RM-CB-002,Couger Box (large),Raw Material,2049,pcs,17.83,36533.67,14-09-2023,22-09-2023,8,Delivered,Delayed 8d
+PO-2023-0092,02-10-2023,SUP-002,Krishna Basket Works,PBP-001,Plate Basket Pipe,Finished Good,592,Pcs,331.54,196271.68,14-10-2023,14-10-2023,0,Delivered,On time
+PO-2023-0093,07-10-2023,SUP-003,Gupta Modular Systems,PNT-001,Pantry,Finished Good,62,Pcs,2055.55,127444.1,25-10-2023,25-10-2023,0,Delivered,On time
+PO-2023-0094,13-10-2023,SUP-004,Sharma Hardware Co.,HNG-001,Hinges,Finished Good,1057,Pcs,41.64,44013.48,23-10-2023,23-10-2023,0,Delivered,On time
+PO-2023-0095,02-10-2023,SUP-005,Lakshmi Rolling Shutters,RSH-001,Rolling Shutter,Finished Good,66,Pcs,1729.01,114114.66,23-10-2023,24-10-2023,1,Delivered,Minor delay
+PO-2023-0096,09-10-2023,SUP-007,ATC Magic Corners,MGC-001,Magic Corner,Finished Good,13,Pcs,3902.01,50726.13,08-11-2023,09-11-2023,1,Delivered,Minor delay
+PO-2023-0097,16-10-2023,SUP-RM-003,Plastex Packaging,RM-PL-001,Polythene Packing 50mu,Raw Material,287,kg,97.13,27876.31,23-10-2023,23-10-2023,0,Delivered,On time
+PO-2023-0098,05-10-2023,SUP-RM-004,Shree Fittings Works,RM-FT-001,Fittings Assorted,Raw Material,2544,set,26.91,68459.04,12-10-2023,13-10-2023,1,Delivered,On time
+PO-2023-0099,04-11-2023,SUP-001,Mehta Wire Industries,TBP-001,Thali Basket Pipe,Finished Good,537,Pcs,369.57,198459.09,16-11-2023,18-11-2023,2,Delivered,Minor delay
+PO-2023-0100,07-11-2023,SUP-002,Krishna Basket Works,PBP-001,Plate Basket Pipe,Finished Good,505,Pcs,346.66,175063.3,19-11-2023,19-11-2023,0,Delivered,On time
+PO-2023-0101,11-11-2023,SUP-007,ATC Magic Corners,MGC-001,Magic Corner,Finished Good,29,Pcs,4143.23,120153.67,11-12-2023,12-12-2023,1,Delivered,Minor delay
+PO-2023-0102,15-11-2023,SUP-RM-001,National Wire Suppliers,RM-WR-001,Wire Roll (MS),Raw Material,1489,kg,82.91,123452.99,22-11-2023,22-11-2023,0,Delivered,On time
+PO-2023-0103,02-11-2023,SUP-RM-002,Chem Allied Industries,RM-CH-001,Chrome Chemical,Raw Material,201,ltr,338.22,67982.22,09-11-2023,09-11-2023,0,Delivered,On time
+PO-2023-0104,11-11-2023,SUP-RM-003,Plastex Packaging,RM-PL-001,Polythene Packing 50mu,Raw Material,324,kg,98.19,31813.56,18-11-2023,19-11-2023,1,Delivered,On time
+PO-2023-0105,05-12-2023,SUP-001,Mehta Wire Industries,TBP-001,Thali Basket Pipe,Finished Good,401,Pcs,376.4,150936.4,17-12-2023,18-12-2023,1,Delivered,Minor delay
+PO-2023-0106,01-12-2023,SUP-003,Gupta Modular Systems,PNT-001,Pantry,Finished Good,149,Pcs,2275.72,339082.28,19-12-2023,22-12-2023,3,Delivered,Minor delay
+PO-2023-0107,08-12-2023,SUP-004,Sharma Hardware Co.,HNG-001,Hinges,Finished Good,942,Pcs,41.61,39196.62,18-12-2023,19-12-2023,1,Delivered,Minor delay
+PO-2023-0108,11-12-2023,SUP-005,Lakshmi Rolling Shutters,RSH-001,Rolling Shutter,Finished Good,83,Pcs,1694.41,140636.03,01-01-2024,08-01-2024,7,Delivered,Delayed 7d
+PO-2023-0109,05-12-2023,SUP-006,Patel Chimney Solutions,CHM-001,Chimney,Finished Good,50,Pcs,3478.83,173941.5,30-12-2023,31-12-2023,1,Delivered,Minor delay
+PO-2023-0110,09-12-2023,SUP-007,ATC Magic Corners,MGC-001,Magic Corner,Finished Good,19,Pcs,4170.99,79248.81,08-01-2024,10-01-2024,2,Delivered,Minor delay
+PO-2023-0111,02-12-2023,SUP-RM-001,National Wire Suppliers,RM-WR-001,Wire Roll (MS),Raw Material,1591,kg,84.28,134089.48,09-12-2023,09-12-2023,0,Delivered,On time
+PO-2023-0112,02-12-2023,SUP-RM-003,Plastex Packaging,RM-PL-001,Polythene Packing 50mu,Raw Material,225,kg,94.08,21168,09-12-2023,08-12-2023,0,Delivered,On time
+PO-2024-0113,07-01-2024,SUP-002,Krishna Basket Works,PBP-001,Plate Basket Pipe,Finished Good,364,Pcs,315.3,114769.2,19-01-2024,19-01-2024,0,Delivered,On time
+PO-2024-0114,04-01-2024,SUP-003,Gupta Modular Systems,PNT-001,Pantry,Finished Good,58,Pcs,2220.77,128804.66,22-01-2024,24-01-2024,2,Delivered,Minor delay
+PO-2024-0115,03-01-2024,SUP-005,Lakshmi Rolling Shutters,RSH-001,Rolling Shutter,Finished Good,32,Pcs,1809.92,57917.44,24-01-2024,24-01-2024,0,Delivered,On time
+PO-2024-0116,09-01-2024,SUP-006,Patel Chimney Solutions,CHM-001,Chimney,Finished Good,20,Pcs,3433.71,68674.2,03-02-2024,10-02-2024,7,Delivered,Delayed 7d
+PO-2024-0117,06-01-2024,SUP-007,ATC Magic Corners,MGC-001,Magic Corner,Finished Good,16,Pcs,3917.36,62677.76,05-02-2024,06-02-2024,1,Delivered,Minor delay
+PO-2024-0118,16-01-2024,SUP-RM-002,Chem Allied Industries,RM-CH-001,Chrome Chemical,Raw Material,160,ltr,325.64,52102.4,23-01-2024,24-01-2024,1,Delivered,On time
+PO-2024-0119,14-01-2024,SUP-RM-003,Plastex Packaging,RM-PL-001,Polythene Packing 50mu,Raw Material,369,kg,98.48,36339.12,21-01-2024,22-01-2024,1,Delivered,On time
+PO-2024-0120,02-01-2024,SUP-RM-005,Papercraf Packaging,RM-CB-002,Couger Box (large),Raw Material,1682,pcs,17.55,29519.1,09-01-2024,10-01-2024,1,Delivered,On time
+PO-2024-0121,10-02-2024,SUP-002,Krishna Basket Works,PBP-001,Plate Basket Pipe,Finished Good,309,Pcs,337.84,104392.56,22-02-2024,22-02-2024,0,Delivered,On time
+PO-2024-0122,07-02-2024,SUP-003,Gupta Modular Systems,PNT-001,Pantry,Finished Good,115,Pcs,2110.33,242687.95,25-02-2024,23-02-2024,0,Delivered,On time
+PO-2024-0123,09-02-2024,SUP-005,Lakshmi Rolling Shutters,RSH-001,Rolling Shutter,Finished Good,54,Pcs,1802.24,97320.96,01-03-2024,02-03-2024,1,Delivered,Minor delay
+PO-2024-0124,13-02-2024,SUP-006,Patel Chimney Solutions,CHM-001,Chimney,Finished Good,45,Pcs,3454.88,155469.6,09-03-2024,07-03-2024,0,Delivered,On time
+PO-2024-0125,08-02-2024,SUP-007,ATC Magic Corners,MGC-001,Magic Corner,Finished Good,15,Pcs,4212.31,63184.65,09-03-2024,10-03-2024,1,Delivered,Minor delay
+PO-2024-0126,07-02-2024,SUP-RM-005,Papercraf Packaging,RM-CB-001,Couger Box (small),Raw Material,2976,pcs,12.39,36872.64,14-02-2024,13-02-2024,0,Delivered,On time
+PO-2024-0127,02-03-2024,SUP-002,Krishna Basket Works,PBP-001,Plate Basket Pipe,Finished Good,306,Pcs,325.49,99599.94,14-03-2024,15-03-2024,1,Delivered,Minor delay
+PO-2024-0128,11-03-2024,SUP-003,Gupta Modular Systems,PNT-001,Pantry,Finished Good,73,Pcs,2066.89,150882.97,29-03-2024,30-03-2024,1,Delivered,Minor delay
+PO-2024-0129,13-03-2024,SUP-004,Sharma Hardware Co.,HNG-001,Hinges,Finished Good,985,Pcs,47.2,46492,23-03-2024,24-03-2024,1,Delivered,Minor delay
+PO-2024-0130,01-03-2024,SUP-005,Lakshmi Rolling Shutters,RSH-001,Rolling Shutter,Finished Good,38,Pcs,1716.46,65225.48,22-03-2024,22-03-2024,0,Delivered,On time
+PO-2024-0131,02-03-2024,SUP-RM-001,National Wire Suppliers,RM-WR-001,Wire Roll (MS),Raw Material,1782,kg,81.27,144823.14,09-03-2024,14-03-2024,5,Delivered,Delayed 5d
+PO-2024-0132,10-03-2024,SUP-RM-002,Chem Allied Industries,RM-CH-001,Chrome Chemical,Raw Material,227,ltr,327.64,74374.28,17-03-2024,17-03-2024,0,Delivered,On time
+PO-2024-0133,05-03-2024,SUP-RM-004,Shree Fittings Works,RM-FT-001,Fittings Assorted,Raw Material,2775,set,29.47,81779.25,12-03-2024,13-03-2024,1,Delivered,On time
+PO-2024-0134,02-04-2024,SUP-003,Gupta Modular Systems,PNT-001,Pantry,Finished Good,127,Pcs,2113.64,268432.28,20-04-2024,18-04-2024,0,Delivered,On time
+PO-2024-0135,04-04-2024,SUP-RM-001,National Wire Suppliers,RM-WR-002,Wire Roll (SS),Raw Material,575,kg,141.81,81540.75,11-04-2024,11-04-2024,0,Delivered,On time
+PO-2024-0136,04-04-2024,SUP-RM-004,Shree Fittings Works,RM-FT-001,Fittings Assorted,Raw Material,2359,set,27.36,64542.24,11-04-2024,11-04-2024,0,Delivered,On time
+PO-2024-0137,05-04-2024,SUP-RM-005,Papercraf Packaging,RM-CB-001,Couger Box (small),Raw Material,3282,pcs,11.81,38760.42,12-04-2024,13-04-2024,1,Delivered,On time
+PO-2024-0138,12-05-2024,SUP-002,Krishna Basket Works,PBP-001,Plate Basket Pipe,Finished Good,476,Pcs,347.67,165490.92,24-05-2024,22-05-2024,0,Delivered,On time
+PO-2024-0139,09-05-2024,SUP-003,Gupta Modular Systems,PNT-001,Pantry,Finished Good,140,Pcs,2219.98,310797.2,27-05-2024,27-05-2024,0,Delivered,On time
+PO-2024-0140,04-05-2024,SUP-004,Sharma Hardware Co.,HNG-001,Hinges,Finished Good,507,Pcs,47.02,23839.14,14-05-2024,15-05-2024,1,Delivered,Minor delay
+PO-2024-0141,13-05-2024,SUP-007,ATC Magic Corners,MGC-001,Magic Corner,Finished Good,27,Pcs,3951.48,106689.96,12-06-2024,11-06-2024,0,Delivered,On time
+PO-2024-0142,11-05-2024,SUP-RM-001,National Wire Suppliers,RM-WR-001,Wire Roll (MS),Raw Material,1406,kg,81.07,113984.42,18-05-2024,19-05-2024,1,Delivered,On time
+PO-2024-0143,11-05-2024,SUP-RM-005,Papercraf Packaging,RM-CB-001,Couger Box (small),Raw Material,4378,pcs,12.32,53936.96,18-05-2024,17-05-2024,0,Delivered,On time
+PO-2024-0144,10-06-2024,SUP-001,Mehta Wire Industries,TBP-001,Thali Basket Pipe,Finished Good,495,Pcs,371.99,184135.05,22-06-2024,24-06-2024,2,Delivered,Minor delay
+PO-2024-0145,01-06-2024,SUP-002,Krishna Basket Works,PBP-001,Plate Basket Pipe,Finished Good,452,Pcs,347.76,157187.52,13-06-2024,12-06-2024,0,Delivered,On time
+PO-2024-0146,07-06-2024,SUP-003,Gupta Modular Systems,PNT-001,Pantry,Finished Good,81,Pcs,2047.52,165849.12,25-06-2024,25-06-2024,0,Delivered,On time
+PO-2024-0147,09-06-2024,SUP-004,Sharma Hardware Co.,HNG-001,Hinges,Finished Good,1346,Pcs,45.41,61121.86,19-06-2024,18-06-2024,0,Delivered,On time
+PO-2024-0148,08-06-2024,SUP-006,Patel Chimney Solutions,CHM-001,Chimney,Finished Good,30,Pcs,3532.8,105984,03-07-2024,08-07-2024,5,Delivered,Delayed 5d
+PO-2024-0149,14-06-2024,SUP-RM-001,National Wire Suppliers,RM-WR-002,Wire Roll (SS),Raw Material,750,kg,152.82,114615,21-06-2024,21-06-2024,0,Delivered,On time
+PO-2024-0150,01-06-2024,SUP-RM-003,Plastex Packaging,RM-PL-001,Polythene Packing 50mu,Raw Material,322,kg,92.64,29830.08,08-06-2024,15-06-2024,7,Delivered,Delayed 7d
+PO-2024-0151,15-06-2024,SUP-RM-004,Shree Fittings Works,RM-FT-001,Fittings Assorted,Raw Material,2962,set,26.75,79233.5,22-06-2024,23-06-2024,1,Delivered,On time
+PO-2024-0152,06-07-2024,SUP-001,Mehta Wire Industries,TBP-001,Thali Basket Pipe,Finished Good,246,Pcs,385.1,94734.6,18-07-2024,20-07-2024,2,Delivered,Minor delay
+PO-2024-0153,08-07-2024,SUP-002,Krishna Basket Works,PBP-001,Plate Basket Pipe,Finished Good,247,Pcs,344.34,85051.98,20-07-2024,21-07-2024,1,Delivered,Minor delay
+PO-2024-0154,13-07-2024,SUP-003,Gupta Modular Systems,PNT-001,Pantry,Finished Good,88,Pcs,2147.35,188966.8,31-07-2024,01-08-2024,1,Delivered,Minor delay
+PO-2024-0155,04-07-2024,SUP-004,Sharma Hardware Co.,HNG-001,Hinges,Finished Good,1226,Pcs,42.51,52117.26,14-07-2024,21-07-2024,7,Delivered,Delayed 7d
+PO-2024-0156,13-07-2024,SUP-005,Lakshmi Rolling Shutters,RSH-001,Rolling Shutter,Finished Good,88,Pcs,1711.1,150576.8,03-08-2024,03-08-2024,0,Delivered,On time
+PO-2024-0157,04-07-2024,SUP-006,Patel Chimney Solutions,CHM-001,Chimney,Finished Good,23,Pcs,3433.34,78966.82,29-07-2024,30-07-2024,1,Delivered,Minor delay
+PO-2024-0158,07-07-2024,SUP-RM-001,National Wire Suppliers,RM-WR-002,Wire Roll (SS),Raw Material,569,kg,147.28,83802.32,14-07-2024,15-07-2024,1,Delivered,On time
+PO-2024-0159,02-07-2024,SUP-RM-002,Chem Allied Industries,RM-CH-001,Chrome Chemical,Raw Material,176,ltr,316.47,55698.72,09-07-2024,08-07-2024,0,Delivered,On time
+PO-2024-0160,09-08-2024,SUP-002,Krishna Basket Works,PBP-001,Plate Basket Pipe,Finished Good,591,Pcs,342.47,202399.77,21-08-2024,21-08-2024,0,Delivered,On time
+PO-2024-0161,09-08-2024,SUP-003,Gupta Modular Systems,PNT-001,Pantry,Finished Good,76,Pcs,2168.07,164773.32,27-08-2024,26-08-2024,0,Delivered,On time
+PO-2024-0162,06-08-2024,SUP-006,Patel Chimney Solutions,CHM-001,Chimney,Finished Good,25,Pcs,3273.16,81829,31-08-2024,01-09-2024,1,Delivered,Minor delay
+PO-2024-0163,03-08-2024,SUP-007,ATC Magic Corners,MGC-001,Magic Corner,Finished Good,24,Pcs,4369.73,104873.52,02-09-2024,02-09-2024,0,Delivered,On time
+PO-2024-0164,09-08-2024,SUP-RM-001,National Wire Suppliers,RM-WR-001,Wire Roll (MS),Raw Material,1516,kg,84.82,128587.12,16-08-2024,16-08-2024,0,Delivered,On time
+PO-2024-0165,16-08-2024,SUP-RM-001,National Wire Suppliers,RM-WR-002,Wire Roll (SS),Raw Material,622,kg,152.47,94836.34,23-08-2024,22-08-2024,0,Delivered,On time
+PO-2024-0166,07-08-2024,SUP-RM-003,Plastex Packaging,RM-PL-001,Polythene Packing 50mu,Raw Material,236,kg,95.16,22457.76,14-08-2024,13-08-2024,0,Delivered,On time
+PO-2024-0167,15-08-2024,SUP-RM-004,Shree Fittings Works,RM-FT-001,Fittings Assorted,Raw Material,1665,set,27.7,46120.5,22-08-2024,22-08-2024,0,Delivered,On time
+PO-2024-0168,12-09-2024,SUP-001,Mehta Wire Industries,TBP-001,Thali Basket Pipe,Finished Good,339,Pcs,359.66,121924.74,24-09-2024,22-09-2024,0,Delivered,On time
+PO-2024-0169,03-09-2024,SUP-002,Krishna Basket Works,PBP-001,Plate Basket Pipe,Finished Good,425,Pcs,342.11,145396.75,15-09-2024,15-09-2024,0,Delivered,On time
+PO-2024-0170,01-09-2024,SUP-003,Gupta Modular Systems,PNT-001,Pantry,Finished Good,68,Pcs,2287.24,155532.32,19-09-2024,21-09-2024,2,Delivered,Minor delay
+PO-2024-0171,08-09-2024,SUP-004,Sharma Hardware Co.,HNG-001,Hinges,Finished Good,525,Pcs,45.39,23829.75,18-09-2024,18-09-2024,0,Delivered,On time
+PO-2024-0172,10-09-2024,SUP-006,Patel Chimney Solutions,CHM-001,Chimney,Finished Good,53,Pcs,3289.97,174368.41,05-10-2024,09-10-2024,4,Delivered,Delayed 4d
+PO-2024-0173,12-09-2024,SUP-007,ATC Magic Corners,MGC-001,Magic Corner,Finished Good,22,Pcs,4011.05,88243.1,12-10-2024,13-10-2024,1,Delivered,Minor delay
+PO-2024-0174,02-09-2024,SUP-RM-001,National Wire Suppliers,RM-WR-002,Wire Roll (SS),Raw Material,529,kg,149.42,79043.18,09-09-2024,09-09-2024,0,Delivered,On time
+PO-2024-0175,02-09-2024,SUP-RM-005,Papercraf Packaging,RM-CB-001,Couger Box (small),Raw Material,3175,pcs,11.47,36417.25,09-09-2024,09-09-2024,0,Delivered,On time
+PO-2024-0176,13-09-2024,SUP-RM-005,Papercraf Packaging,RM-CB-002,Couger Box (large),Raw Material,1413,pcs,19.01,26861.13,20-09-2024,20-09-2024,0,Delivered,On time
+PO-2024-0177,04-10-2024,SUP-002,Krishna Basket Works,PBP-001,Plate Basket Pipe,Finished Good,313,Pcs,346.06,108316.78,16-10-2024,17-10-2024,1,Delivered,Minor delay
+PO-2024-0178,08-10-2024,SUP-004,Sharma Hardware Co.,HNG-001,Hinges,Finished Good,1403,Pcs,44.93,63036.79,18-10-2024,18-10-2024,0,Delivered,On time
+PO-2024-0179,02-10-2024,SUP-005,Lakshmi Rolling Shutters,RSH-001,Rolling Shutter,Finished Good,41,Pcs,1760.23,72169.43,23-10-2024,03-11-2024,11,Delivered,Delayed 11d
+PO-2024-0180,05-10-2024,SUP-006,Patel Chimney Solutions,CHM-001,Chimney,Finished Good,23,Pcs,3412.25,78481.75,30-10-2024,31-10-2024,1,Delivered,Minor delay
+PO-2024-0181,03-10-2024,SUP-007,ATC Magic Corners,MGC-001,Magic Corner,Finished Good,11,Pcs,4144.28,45587.08,02-11-2024,03-11-2024,1,Delivered,Minor delay
+PO-2024-0182,08-11-2024,SUP-001,Mehta Wire Industries,TBP-001,Thali Basket Pipe,Finished Good,320,Pcs,398.22,127430.4,20-11-2024,21-11-2024,1,Delivered,Minor delay
+PO-2024-0183,04-11-2024,SUP-003,Gupta Modular Systems,PNT-001,Pantry,Finished Good,106,Pcs,2181.58,231247.48,22-11-2024,22-11-2024,0,Delivered,On time
+PO-2024-0184,09-11-2024,SUP-005,Lakshmi Rolling Shutters,RSH-001,Rolling Shutter,Finished Good,57,Pcs,1824.55,103999.35,30-11-2024,28-11-2024,0,Delivered,On time
+PO-2024-0185,10-11-2024,SUP-007,ATC Magic Corners,MGC-001,Magic Corner,Finished Good,10,Pcs,4268.32,42683.2,10-12-2024,12-12-2024,2,Delivered,Minor delay
+PO-2024-0186,14-11-2024,SUP-RM-003,Plastex Packaging,RM-PL-001,Polythene Packing 50mu,Raw Material,262,kg,97.82,25628.84,21-11-2024,21-11-2024,0,Delivered,On time
+PO-2024-0187,09-11-2024,SUP-RM-005,Papercraf Packaging,RM-CB-001,Couger Box (small),Raw Material,2906,pcs,11.5,33419,16-11-2024,15-11-2024,0,Delivered,On time
+PO-2024-0188,11-12-2024,SUP-001,Mehta Wire Industries,TBP-001,Thali Basket Pipe,Finished Good,207,Pcs,369.11,76405.77,23-12-2024,25-12-2024,2,Delivered,Minor delay
+PO-2024-0189,11-12-2024,SUP-002,Krishna Basket Works,PBP-001,Plate Basket Pipe,Finished Good,547,Pcs,355.49,194453.03,23-12-2024,24-12-2024,1,Delivered,Minor delay
+PO-2024-0190,10-12-2024,SUP-004,Sharma Hardware Co.,HNG-001,Hinges,Finished Good,860,Pcs,45.34,38992.4,20-12-2024,22-12-2024,2,Delivered,Minor delay
+PO-2024-0191,05-12-2024,SUP-006,Patel Chimney Solutions,CHM-001,Chimney,Finished Good,20,Pcs,3270.92,65418.4,30-12-2024,29-12-2024,0,Delivered,On time
+PO-2024-0192,04-12-2024,SUP-007,ATC Magic Corners,MGC-001,Magic Corner,Finished Good,19,Pcs,3943.25,74921.75,03-01-2025,09-01-2025,6,Delivered,Delayed 6d
+PO-2024-0193,07-12-2024,SUP-RM-001,National Wire Suppliers,RM-WR-001,Wire Roll (MS),Raw Material,1148,kg,84.69,97224.12,14-12-2024,14-12-2024,0,Delivered,On time
+PO-2024-0194,05-12-2024,SUP-RM-001,National Wire Suppliers,RM-WR-002,Wire Roll (SS),Raw Material,785,kg,145.27,114036.95,12-12-2024,12-12-2024,0,Delivered,On time
+PO-2024-0195,13-12-2024,SUP-RM-004,Shree Fittings Works,RM-FT-001,Fittings Assorted,Raw Material,1764,set,29.21,51526.44,20-12-2024,19-12-2024,0,Delivered,On time
+PO-2024-0196,14-12-2024,SUP-RM-005,Papercraf Packaging,RM-CB-001,Couger Box (small),Raw Material,3788,pcs,12.37,46857.56,21-12-2024,22-12-2024,1,Delivered,On time
+PO-2025-0197,07-01-2025,SUP-001,Mehta Wire Industries,TBP-001,Thali Basket Pipe,Finished Good,489,Pcs,395.8,193546.2,19-01-2025,21-01-2025,2,Delivered,Minor delay
+PO-2025-0198,01-01-2025,SUP-004,Sharma Hardware Co.,HNG-001,Hinges,Finished Good,1076,Pcs,44.64,48032.64,11-01-2025,12-01-2025,1,Delivered,Minor delay
+PO-2025-0199,11-01-2025,SUP-005,Lakshmi Rolling Shutters,RSH-001,Rolling Shutter,Finished Good,37,Pcs,1801.71,66663.27,01-02-2025,02-02-2025,1,Delivered,Minor delay
+PO-2025-0200,07-01-2025,SUP-007,ATC Magic Corners,MGC-001,Magic Corner,Finished Good,24,Pcs,4120.21,98885.04,06-02-2025,06-02-2025,0,Delivered,On time
+PO-2025-0201,08-01-2025,SUP-RM-001,National Wire Suppliers,RM-WR-001,Wire Roll (MS),Raw Material,1339,kg,86.38,115662.82,15-01-2025,16-01-2025,1,Delivered,On time
+PO-2025-0202,10-01-2025,SUP-RM-003,Plastex Packaging,RM-PL-001,Polythene Packing 50mu,Raw Material,391,kg,98.96,38693.36,17-01-2025,17-01-2025,0,Delivered,On time
+PO-2025-0203,12-02-2025,SUP-004,Sharma Hardware Co.,HNG-001,Hinges,Finished Good,629,Pcs,42.57,26776.53,22-02-2025,23-02-2025,1,Delivered,Minor delay
+PO-2025-0204,07-02-2025,SUP-006,Patel Chimney Solutions,CHM-001,Chimney,Finished Good,32,Pcs,3315.29,106089.28,04-03-2025,14-03-2025,10,Delivered,Delayed 10d
+PO-2025-0205,01-02-2025,SUP-007,ATC Magic Corners,MGC-001,Magic Corner,Finished Good,17,Pcs,3950.6,67160.2,03-03-2025,03-03-2025,0,Delivered,On time
+PO-2025-0206,03-02-2025,SUP-RM-002,Chem Allied Industries,RM-CH-001,Chrome Chemical,Raw Material,194,ltr,308.25,59800.5,10-02-2025,09-02-2025,0,Delivered,On time
+PO-2025-0207,09-02-2025,SUP-RM-003,Plastex Packaging,RM-PL-001,Polythene Packing 50mu,Raw Material,271,kg,90.74,24590.54,16-02-2025,24-02-2025,8,Delivered,Delayed 8d
+PO-2025-0208,05-02-2025,SUP-RM-005,Papercraf Packaging,RM-CB-001,Couger Box (small),Raw Material,3850,pcs,11.54,44429,12-02-2025,13-02-2025,1,Delivered,On time
+PO-2025-0209,15-02-2025,SUP-RM-005,Papercraf Packaging,RM-CB-002,Couger Box (large),Raw Material,2369,pcs,18.65,44181.85,22-02-2025,21-02-2025,0,Delivered,On time
+PO-2025-0210,09-03-2025,SUP-003,Gupta Modular Systems,PNT-001,Pantry,Finished Good,66,Pcs,2057.76,135812.16,27-03-2025,25-03-2025,0,Delivered,On time
+PO-2025-0211,06-03-2025,SUP-004,Sharma Hardware Co.,HNG-001,Hinges,Finished Good,1208,Pcs,45.86,55398.88,16-03-2025,16-03-2025,0,Delivered,On time
+PO-2025-0212,02-03-2025,SUP-005,Lakshmi Rolling Shutters,RSH-001,Rolling Shutter,Finished Good,50,Pcs,1688.24,84412,23-03-2025,23-03-2025,0,Delivered,On time
+PO-2025-0213,07-03-2025,SUP-007,ATC Magic Corners,MGC-001,Magic Corner,Finished Good,14,Pcs,4305.79,60281.06,06-04-2025,09-04-2025,3,Delivered,Minor delay
+PO-2025-0214,06-03-2025,SUP-RM-001,National Wire Suppliers,RM-WR-001,Wire Roll (MS),Raw Material,1715,kg,84.63,145140.45,13-03-2025,13-03-2025,0,Delivered,On time
+PO-2025-0215,14-03-2025,SUP-RM-002,Chem Allied Industries,RM-CH-001,Chrome Chemical,Raw Material,216,ltr,318.55,68806.8,21-03-2025,20-03-2025,0,Delivered,On time
+PO-2025-0216,15-03-2025,SUP-RM-003,Plastex Packaging,RM-PL-001,Polythene Packing 50mu,Raw Material,358,kg,94.03,33662.74,22-03-2025,28-03-2025,6,Delivered,Delayed 6d
+PO-2025-0217,05-03-2025,SUP-RM-004,Shree Fittings Works,RM-FT-001,Fittings Assorted,Raw Material,2889,set,29.51,85254.39,12-03-2025,13-03-2025,1,Delivered,On time
+PO-2025-0218,11-03-2025,SUP-RM-005,Papercraf Packaging,RM-CB-001,Couger Box (small),Raw Material,3441,pcs,11.92,41016.72,18-03-2025,17-03-2025,0,Delivered,On time
+PO-2025-0219,05-03-2025,SUP-RM-005,Papercraf Packaging,RM-CB-002,Couger Box (large),Raw Material,2373,pcs,19.04,45181.92,12-03-2025,14-03-2025,2,Delivered,Delayed 2d
+PO-2025-0220,11-04-2025,SUP-004,Sharma Hardware Co.,HNG-001,Hinges,Finished Good,1221,Pcs,43.24,52796.04,21-04-2025,21-04-2025,0,Delivered,On time
+PO-2025-0221,05-04-2025,SUP-005,Lakshmi Rolling Shutters,RSH-001,Rolling Shutter,Finished Good,85,Pcs,1819.87,154688.95,26-04-2025,08-05-2025,12,Delivered,Delayed 12d
+PO-2025-0222,04-04-2025,SUP-006,Patel Chimney Solutions,CHM-001,Chimney,Finished Good,51,Pcs,3516.68,179350.68,29-04-2025,11-05-2025,12,Delivered,Delayed 12d
+PO-2025-0223,07-04-2025,SUP-RM-002,Chem Allied Industries,RM-CH-001,Chrome Chemical,Raw Material,124,ltr,315.77,39155.48,14-04-2025,16-04-2025,2,Delivered,Delayed 2d
+PO-2025-0224,10-04-2025,SUP-RM-005,Papercraf Packaging,RM-CB-001,Couger Box (small),Raw Material,3724,pcs,12.09,45023.16,17-04-2025,18-04-2025,1,Delivered,On time

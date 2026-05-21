@@ -1,0 +1,13 @@
+supplier_id,supplier_name,skus_supplied,lead_time_days,min_order_qty,credit_days,advance_pct,price_valid_until,on_time_rate_pct,penalty_clause,last_audit_date,notes
+SUP-001,Mehta Wire Industries,TBP-001,36,116,30,20,31-12-2025,92,2% per week delay,16-08-2024,Long-term vendor since 2019
+SUP-002,Krishna Basket Works,PBP-001,50,396,45,30,31-12-2025,87,3% per week delay,28-10-2024,ISO 9001 certified
+SUP-003,Gupta Modular Systems,PNT-001,38,448,30,20,31-12-2025,79,2% per week delay,26-10-2024,Bulk discount above 500 units
+SUP-004,Sharma Hardware Co.,HNG-001,25,266,15,20,31-12-2025,95,3% per week delay,09-01-2025,Bulk discount above 500 units
+SUP-005,Lakshmi Rolling Shutters,RSH-001,47,123,45,30,31-12-2025,81,2% per week delay,05-09-2024,Exclusive supplier agreement
+SUP-006,Patel Chimney Solutions,CHM-001,37,116,30,30,31-12-2025,76,1% per week delay,21-12-2024,Price revision pending Q3 2025
+SUP-007,ATC Magic Corners,MGC-001,67,292,60,0,31-12-2025,72,2% per week delay,13-10-2024,New product range available
+SUP-RM-001,National Wire Suppliers,RM-WR-001; RM-WR-002,16,358,15,20,31-12-2025,94,1% per week delay,02-03-2024,New product range available
+SUP-RM-002,Chem Allied Industries,RM-CH-001,39,198,30,0,31-12-2025,88,2% per week delay,01-03-2024,New product range available
+SUP-RM-003,Plastex Packaging,RM-PL-001,34,241,30,20,31-12-2025,91,2% per week delay,05-09-2024,Long-term vendor since 2019
+SUP-RM-004,Shree Fittings Works,RM-FT-001,17,122,15,30,31-12-2025,96,3% per week delay,25-01-2024,New product range available
+SUP-RM-005,Papercraf Packaging,RM-CB-001; RM-CB-002,34,160,30,0,31-12-2025,89,3% per week delay,02-01-2024,Long-term vendor since 2019

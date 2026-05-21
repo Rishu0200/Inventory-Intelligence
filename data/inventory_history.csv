@@ -1,0 +1,24 @@
+sku_id,item_name,item_type,abc_class,unit,qty_on_hand,qty_wip,qty_in_transit,total_available,reorder_point,days_of_stock,status,snapshot_date,location
+SC-001,Sheet Cutlery,Finished Good,A,Set,2801,176,0,2977,800,55.8,OK,18-05-2025,Warehouse-A
+TBW-001,Thali Basket Wire,Finished Good,A,Pcs,1533,264,0,1797,700,38.5,OK,18-05-2025,Warehouse-A
+PBW-001,Plate Basket Wire,Finished Good,A,Pcs,2503,481,0,2984,650,68.9,OK,18-05-2025,Warehouse-A
+BPO-001,Bottle Pull Out,Finished Good,A,Pcs,2647,161,0,2808,600,70.2,OK,18-05-2025,Warehouse-A
+TBP-001,Thali Basket Pipe,Finished Good,A,Pcs,1495,0,43,1538,550,41.9,OK,18-05-2025,Warehouse-A
+PBP-001,Plate Basket Pipe,Finished Good,A,Pcs,1358,0,39,1397,450,46.6,OK,18-05-2025,Warehouse-A
+PNT-001,Pantry,Finished Good,B,Pcs,743,0,0,743,150,53.1,OK,18-05-2025,Warehouse-A
+CS-001,Cup & Saucer,Finished Good,B,Set,478,161,0,639,200,39.9,OK,18-05-2025,Warehouse-A
+GTP-001,GTPT,Finished Good,B,Pcs,740,36,0,776,150,64.7,OK,18-05-2025,Warehouse-A
+HNG-001,Hinges,Finished Good,B,Pcs,1230,0,0,1230,300,61.5,OK,18-05-2025,Warehouse-A
+CRO-001,Crousal,Finished Good,B,Pcs,339,45,0,384,120,41.1,OK,18-05-2025,Warehouse-A
+TNB-001,Tandum Basket,Finished Good,B,Pcs,603,61,0,664,110,76.6,OK,18-05-2025,Warehouse-A
+RSH-001,Rolling Shutter,Finished Good,C,Pcs,107,0,25,132,60,28.3,Low,18-05-2025,Warehouse-A
+AAT-001,Aata Basket,Finished Good,C,Pcs,522,131,0,653,130,63.2,OK,18-05-2025,Warehouse-A
+CHM-001,Chimney,Finished Good,C,Pcs,172,0,0,172,40,57.3,OK,18-05-2025,Warehouse-A
+MGC-001,Magic Corner,Finished Good,C,Pcs,176,0,5,181,30,72.4,OK,18-05-2025,Warehouse-A
+RM-WR-001,Wire Roll (MS),Raw Material,—,kg,1800,0,0,1800,500,60,OK,18-05-2025,Raw Material Store
+RM-WR-002,Wire Roll (SS),Raw Material,—,kg,620,0,0,620,200,60,OK,18-05-2025,Raw Material Store
+RM-CH-001,Chrome Chemical,Raw Material,—,ltr,180,0,0,180,60,60,OK,18-05-2025,Raw Material Store
+RM-PL-001,Polythene Packing 50mu,Raw Material,—,kg,420,0,0,420,100,60,OK,18-05-2025,Raw Material Store
+RM-FT-001,Fittings Assorted,Raw Material,—,set,3200,0,0,3200,800,60,OK,18-05-2025,Raw Material Store
+RM-CB-001,Couger Box (small),Raw Material,—,pcs,4800,0,0,4800,1200,60,OK,18-05-2025,Raw Material Store
+RM-CB-002,Couger Box (large),Raw Material,—,pcs,2200,0,0,2200,600,60,OK,18-05-2025,Raw Material Store

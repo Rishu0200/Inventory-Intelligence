@@ -1,0 +1,13 @@
+supplier_id,supplier_name,city,state,contact_person,phone,category,payment_terms,on_time_rate_pct,bank,gstin,status
+SUP-001,Mehta Wire Industries,Rajkot,Gujarat,Ramesh Mehta,9825001234,Purchased-Pipe,30 days net,92,SBI,10AAA1456Z9,Active
+SUP-002,Krishna Basket Works,Pune,Maharashtra,Suresh Kale,9823002345,Purchased-Pipe,45 days net,87,Bank of Baroda,18AAA4954Z5,Active
+SUP-003,Gupta Modular Systems,Delhi,Delhi,Anil Gupta,9811003456,Pantry/Corner,30 days net,79,Axis Bank,26AAA2809Z1,Active
+SUP-004,Sharma Hardware Co.,Ludhiana,Punjab,Raj Sharma,9815004567,Hinges/Hardware,15 days net,95,ICICI Bank,18AAA9314Z6,Active
+SUP-005,Lakshmi Rolling Shutters,Hyderabad,Telangana,Venkat Reddy,9848005678,Rolling Shutter,45 days net,81,HDFC Bank,11AAA3043Z8,Active
+SUP-006,Patel Chimney Solutions,Surat,Gujarat,Hitesh Patel,9824006789,Chimney,30 days net,76,ICICI Bank,28AAA1085Z8,Active
+SUP-007,ATC Magic Corners,Chennai,Tamil Nadu,Arjun T C,9841007890,Magic Corner,60 days net,72,ICICI Bank,17AAA9737Z4,Active
+SUP-RM-001,National Wire Suppliers,Mumbai,Maharashtra,Deepak Joshi,9820008901,Wire Roll,15 days net,94,ICICI Bank,19AAA5661Z3,Active
+SUP-RM-002,Chem Allied Industries,Vapi,Gujarat,Nilesh Shah,9826009012,Chrome Chemical,30 days net,88,Axis Bank,26AAA5057Z2,Active
+SUP-RM-003,Plastex Packaging,Silvassa,D&NH,Bhavesh Desai,9829010123,Polythene,30 days net,91,ICICI Bank,26AAA4154Z6,Active
+SUP-RM-004,Shree Fittings Works,Rajkot,Gujarat,Jayesh Modi,9825011234,Fittings,15 days net,96,Axis Bank,13AAA3401Z7,Active
+SUP-RM-005,Papercraf Packaging,Nashik,Maharashtra,Prakash Jadhav,9822012345,Couger Boxes,30 days net,89,Axis Bank,12AAA2511Z1,Active
