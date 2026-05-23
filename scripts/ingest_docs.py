@@ -1,8 +1,3 @@
-"""
-scripts/ingest_docs.py — PDF ingestion pipeline.
-parse → chunk → deduplicate → embed → ChromaDB
-Usage: python scripts/ingest_docs.py
-"""
 import sys
 from pathlib import Path
 sys.path.insert(0, str(Path(__file__).parent.parent))

@@ -1,40 +1,38 @@
-version: "3.9"
-
 services:
+  - type: web
+    name: inventory-intelligence-api
+    runtime: python
+    plan: free
 
-  api:
-    build: .
-    ports:
-      - "8000:8000"
-    volumes:
-      - ./data:/app/data          # persists chroma_store & models
-    env_file:
-      - .env
-    depends_on:
-      - mlflow
-    restart: unless-stopped
+    # Use lean requirements (no PyTorch/sdv)
+    buildCommand: pip install -r requirements-api.txt
 
-  frontend:
-    build: .
-    command: streamlit run frontend/app.py --server.port 8501 --server.address 0.0.0.0
-    ports:
-      - "8501:8501"
-    env_file:
-      - .env
-    environment:
-      - API_BASE_URL=http://api:8000
-    depends_on:
-      - api
-    restart: unless-stopped
+    # $PORT is injected by Render automatically
+    startCommand: uvicorn api.main:app --host 0.0.0.0 --port $PORT --workers 1
 
-  mlflow:
-    image: python:3.11-slim
-    command: >
-      sh -c "pip install mlflow --quiet &&
-             mlflow server --host 0.0.0.0 --port 5000
-             --backend-store-uri /mlruns"
-    ports:
-      - "5000:5000"
-    volumes:
-      - ./mlruns:/mlruns
-    restart: unless-stopped
+    # Render health check — keeps the service monitored
+    healthCheckPath: /ping
+
+    envVars:
+      # ── LLM provider ──────────────────────────────────────────
+      - key: LLM_PROVIDER
+        value: groq
+      - key: GROQ_MODEL
+        value: llama-3.3-70b-versatile
+      - key: GROQ_API_KEY
+        sync: false      # Set this manually in Render dashboard
+
+      # ── App settings ─────────────────────────────────────────
+      - key: DEMO_MODE
+        value: "false"
+      - key: LOG_LEVEL
+        value: INFO
+
+      # ── ChromaDB ─────────────────────────────────────────────
+      # Points to the committed chroma_store in the repo
+      - key: CHROMA_STORE_PATH
+        value: data/processed/chroma_store
+
+      # ── MLflow (disabled in prod) ────────────────────────────
+      - key: MLFLOW_TRACKING_URI
+        value: ""

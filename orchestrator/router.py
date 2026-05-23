@@ -6,6 +6,7 @@ Also extracts SKU ID if mentioned in the query.
 from __future__ import annotations
 import re
 from config import settings
+from orchestrator.llm_factory import get_llm
 
 # ── SKU patterns for Uninox Houseware ────────────────────────────────────────
 _SKU_RE = re.compile(
@@ -74,13 +75,13 @@ def classify_intent(query: str) -> tuple[str, str]:
 def _llm_classify(query: str) -> str:
     """Use a small LLM call to resolve ambiguous intent."""
     try:
-        from langchain_openai import ChatOpenAI
-        llm = ChatOpenAI(
-            model=settings.openai_model,
-            api_key=settings.openai_api_key,
-            temperature=0,
-            max_tokens=10,
-        )
+        llm = get_llm(temperature=0, max_tokens=10)
+        # llm = ChatOpenAI(
+        #     model=settings.openai_model,
+        #     api_key=settings.openai_api_key,
+        #     temperature=0,
+        #     max_tokens=10,
+        #)
         prompt = (
             "Classify this inventory query into exactly one word: "
             "demand / reorder / supplier / anomaly / general\n\n"

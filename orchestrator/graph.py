@@ -6,12 +6,11 @@ Defines the full agentic workflow:
 from __future__ import annotations
 from typing import TypedDict
 from langgraph.graph import StateGraph, END
-
+from orchestrator.llm_factory import get_llm
 from orchestrator.router import classify_intent
 from config import settings
 
 
-# ── Shared state schema ───────────────────────────────────────────────────────
 
 class InventoryState(TypedDict):
     query:          str   # User's original query
@@ -22,7 +21,6 @@ class InventoryState(TypedDict):
     final_response: str   # Synthesised, user-facing answer
 
 
-# ── Node: router ─────────────────────────────────────────────────────────────
 
 def router_node(state: InventoryState) -> dict:
     intent, sku_id = classify_intent(state["query"])
@@ -42,7 +40,6 @@ def route_selector(state: InventoryState) -> str:
     return mapping.get(intent, "demand_agent")
 
 
-# ── Node: synthesiser ─────────────────────────────────────────────────────────
 
 def synthesiser_node(state: InventoryState) -> dict:
     """
@@ -56,13 +53,7 @@ def synthesiser_node(state: InventoryState) -> dict:
         return {"final_response": tool_result}
 
     try:
-        from langchain_openai import ChatOpenAI
-        llm = ChatOpenAI(
-            model=settings.openai_model,
-            api_key=settings.openai_api_key,
-            temperature=0.3,
-            max_tokens=512,
-        )
+        llm = get_llm(temperature=0.3, max_tokens=512)
         context_snippet = rag_context[:600] if rag_context else "No additional context."
         prompt = (
             "You are an inventory intelligence assistant for Uninox Houseware, "
@@ -130,7 +121,6 @@ def build_graph() -> StateGraph:
     return workflow
 
 
-# ── Compiled singleton ────────────────────────────────────────────────────────
 
 _graph = None
 

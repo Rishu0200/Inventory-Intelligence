@@ -3,7 +3,7 @@ Split extracted page text into overlapping chunks for ChromaDB ingestion.
 Uses LangChain's RecursiveCharacterTextSplitter (400 tokens, 50-token overlap).
 """
 from __future__ import annotations
-from langchain.text_splitter import RecursiveCharacterTextSplitter
+from langchain_text_splitters import RecursiveCharacterTextSplitter
 
 # 400 tokens ≈ 1,600 chars for typical English text
 _SPLITTER = RecursiveCharacterTextSplitter(
