@@ -10,8 +10,8 @@ from pathlib import Path
 from sklearn.model_selection import TimeSeriesSplit
 from sklearn.metrics import mean_absolute_percentage_error, mean_squared_error
 import xgboost as xgb
-import mlflow
-import mlflow.xgboost
+#import mlflow
+#import mlflow.xgboost
 
 from config import Paths, settings
 from knowledge.feature_store.feature_engineering import (
@@ -143,6 +143,7 @@ def forecast_sku(sku_id: str,
 
 
 # ── Main training entry point ─────────────────────────────────────────────────
+'''
 
 def train_and_save():
     mlflow.set_tracking_uri(settings.mlflow_tracking_uri)
@@ -166,7 +167,7 @@ def train_and_save():
             pass
 
     print("✓ Demand model training complete.")
-
+'''
 
 if __name__ == "__main__":
     train_and_save()
