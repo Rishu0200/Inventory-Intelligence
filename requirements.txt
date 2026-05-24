@@ -34,8 +34,8 @@ python-dotenv>=1.0.0
 fastapi-cache2>=0.2.1
  
 # Frontend
-#streamlit>=1.38.0
-#plotly>=5.24.0
+streamlit>=1.38.0
+plotly>=5.24.0
  
 # MLflow Experiment Tracking
 #mlflow>=2.16.0
