@@ -7,8 +7,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     build-essential \
     && rm -rf /var/lib/apt/lists/*
  
-COPY requirements-api.txt .
-RUN pip install --no-cache-dir --user -r requirements-api.txt
+COPY requirements.txt .
+RUN pip install --no-cache-dir --user -r requirements.txt
  
 # ── Stage 2: lean runtime image ──────────────────────────────
 FROM python:3.11-slim

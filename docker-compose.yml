@@ -5,7 +5,7 @@ services:
     plan: free
 
     # Use lean requirements (no PyTorch/sdv)
-    buildCommand: pip install -r requirements-api.txt
+    buildCommand: pip install -r requirements.txt
 
     # $PORT is injected by Render automatically
     startCommand: uvicorn api.main:app --host 0.0.0.0 --port $PORT --workers 1
