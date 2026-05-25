@@ -108,7 +108,6 @@ DATA SOURCES (6 CSVs — 512 demand records, 224 POs, 12 suppliers)
 inventory-intelligence/
 ├── config.py                     Central settings — imported everywhere
 ├── requirements.txt              Local dev (full stack)
-├── requirements-api.txt          Render API (lean, no PyTorch)
 ├── render.yaml                   Both services configured
 ├── .streamlit/config.toml        Streamlit production settings
 ├── data/
@@ -137,7 +136,7 @@ inventory-intelligence/
 ## Quick Start
 
 ```bash
-git clone https://github.com/yourusername/inventory-intelligence.git
+git clone https://github.com/Rishu0200/Inventory-Intelligence.git
 cd inventory-intelligence
 python -m venv .venv && source .venv/bin/activate
 pip install -r requirements.txt
@@ -228,7 +227,7 @@ pytest tests/ -v    # 22 tests, ~4s
 
 ## About the Author
 
-**Rishabh Anand** — Data Scientist with real supply chain domain expertise. Former Supply Chain and Operations Executive at Aashi Enterprises (Uninox Houseware), managing supplier payments, raw material procurement, and international export documentation (Commercial Invoices, LC, SAFTA certificates). GATE 2023 qualified (90th percentile, ECE). This project bridges two years of hands-on supply chain experience with applied ML and agentic AI.
+**Rishabh Anand** — Data Scientist with real supply chain domain expertise. Former Supply Chain and Operations Executive , managing supplier payments, raw material procurement, and international export documentation (Commercial Invoices, LC, SAFTA certificates). GATE 2023 qualified (90th percentile, ECE). This project bridges two years of hands-on supply chain experience with applied ML and agentic AI.
 
 Email: Rishabhanand0200@gmail.com
 
