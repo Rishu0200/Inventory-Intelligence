@@ -1,8 +1,3 @@
-"""
-Generate 50 Supplier Catalog PDFs for the RAG knowledge base.
-Run: python -m data_generation.generate_supplier_docs
-Output: data/synthetic/supplier_catalogs/catalog_XX.pdf
-"""
 import os
 import random
 from datetime import datetime, timedelta

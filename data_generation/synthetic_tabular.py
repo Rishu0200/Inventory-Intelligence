@@ -1,8 +1,3 @@
-"""
-Extend existing real CSVs using SDV GaussianCopulaSynthesizer.
-Learns statistical patterns from seed data and generates more realistic rows.
-Run: python -m data_generation.synthetic_tabular
-"""
 import os
 import pandas as pd
 import numpy as np
