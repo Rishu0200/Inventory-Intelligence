@@ -1,8 +1,3 @@
-"""
-Generate 200 Purchase Order PDFs using real Uninox Houseware supplier and SKU data.
-Run: python -m data_generation.generate_pos
-Output: data/synthetic/purchase_orders/PO_XXXX.pdf
-"""
 import os
 import random
 from datetime import datetime, timedelta
