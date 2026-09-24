@@ -6,17 +6,24 @@ from __future__ import annotations
 import chromadb
 from chromadb.utils import embedding_functions
 
+
 from config import Paths, settings
 
 
 def get_client() -> chromadb.PersistentClient:
-    """Return a persistent ChromaDB client backed by local disk."""
+    """Return a ChromaDB client, either cloud or local."""
+    if settings.chroma_cloud_api_key:
+        return chromadb.CloudClient(
+            api_key=settings.chroma_cloud_api_key,
+            tenant=settings.chroma_cloud_tenant,
+            database=settings.chroma_cloud_database,
+        )
     return chromadb.PersistentClient(path=str(Paths.CHROMA_STORE))
 
 
-def get_embedding_fn() -> embedding_functions.SentenceTransformerEmbeddingFunction:
-    return embedding_functions.SentenceTransformerEmbeddingFunction(
-        model_name="all-MiniLM-L6-v2"
+def get_embedding_fn():
+    return embedding_functions.FastEmbedEmbeddingFunction(
+        model_name="BAAI/bge-small-en-v1.5"
     )
 
 
