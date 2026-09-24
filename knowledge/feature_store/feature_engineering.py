@@ -59,7 +59,9 @@ def build_sku_features(df: pd.DataFrame) -> pd.DataFrame:
         grp["is_high_season"] = grp["month"].isin([10, 11, 12, 1]).astype(int)
         results.append(grp)
 
-    features = pd.concat(results).dropna(subset=["lag_1"]).reset_index(drop=True)
+    features = pd.concat(results).reset_index(drop=True)
+    required_cols = get_feature_columns()
+    features = features.dropna(subset=required_cols).reset_index(drop=True)
     return features
 
 

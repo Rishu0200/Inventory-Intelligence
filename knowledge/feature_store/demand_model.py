@@ -124,26 +124,42 @@ def forecast_sku(sku_id: str,
             "upper":    [round(f + 1.64*std, 1) for f in fc],
         }
 
-    last_row = sku_feats.iloc[[-1]][FEATURE_COLS].values
-    fc_vals, lo_vals, hi_vals = [], [], []
+    last_period = sku_df["period"].max()
+    history = list(sku_df["net_units"].tail(6))   # rolling window we can extend
+    last_row_dict = sku_feats.iloc[-1].to_dict()
 
+    fc_vals, lo_vals, hi_vals = [], [], []
     std = float(sku_df["net_units"].std(ddof=0))
 
-    for _ in range(horizon):
-        pred = float(model.predict(last_row)[0])
-        pred = max(0, pred)
-        fc_vals.append(round(pred, 1))
-        lo_vals.append(round(max(0, pred - 1.64*std), 1))
-        hi_vals.append(round(pred + 1.64*std, 1))
+    for step in range(1, horizon + 1):
+        next_period = last_period + pd.DateOffset(months=step)
 
-        # Roll features forward (simplified)
-        last_row[0][0] = pred   # lag_1 = current pred
+        feat_row = {
+            "lag_1":       history[-1],
+            "lag_3":       history[-3] if len(history) >= 3 else last_row_dict.get("lag_3", history[-1]),
+            "lag_6":       history[-6] if len(history) >= 6 else last_row_dict.get("lag_6", history[-1]),
+            "roll_mean_3": float(np.mean(history[-3:])),
+            "roll_std_3":  float(np.std(history[-3:], ddof=0)),
+            "roll_mean_6": float(np.mean(history[-6:])),
+            "yoy_growth":  last_row_dict.get("yoy_growth", 0),
+            "month":       next_period.month,
+            "quarter":     (next_period.month - 1) // 3 + 1,
+            "abc_enc":     last_row_dict.get("abc_enc", 1),
+            "is_high_season": int(next_period.month in [10, 11, 12, 1]),
+        }
+        x = np.array([[feat_row[c] for c in FEATURE_COLS]])
+        pred = max(0.0, float(model.predict(x)[0]))
+
+        fc_vals.append(round(pred, 1))
+        lo_vals.append(round(max(0, pred - 1.64 * std), 1))
+        hi_vals.append(round(pred + 1.64 * std, 1))
+
+        history.append(pred)   # feed the prediction back in for the next step's lags
 
     return {"sku_id": sku_id, "forecast": fc_vals, "lower": lo_vals, "upper": hi_vals}
 
-
 # ── Main training entry point ─────────────────────────────────────────────────
-'''
+
 
 def train_and_save():
     mlflow.set_tracking_uri(settings.mlflow_tracking_uri)
@@ -167,7 +183,6 @@ def train_and_save():
             pass
 
     print("✓ Demand model training complete.")
-'''
 
 if __name__ == "__main__":
     train_and_save()

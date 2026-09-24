@@ -34,9 +34,12 @@ st.markdown("""
 # ── Helper functions ──────────────────────────────────────────────────────────
 
 @st.cache_data(ttl=600)
-def fetch_alerts():
+def fetch_alerts(force_refresh: bool = False):
     try:
-        r = requests.get(f"{API_BASE}/api/alerts", timeout=10)
+        url = f"{API_BASE}/api/alerts"
+        if force_refresh:
+            url += "?refresh=true"
+        r = requests.get(url, timeout=10)
         return r.json() if r.status_code == 200 else None
     except Exception:
         return None
@@ -208,7 +211,9 @@ with tab_forecast:
         from config import Paths
         inv_df = pd.read_csv(Paths.DATA_RAW / "demand_history.csv")
         sku_list = sorted(inv_df["sku_id"].unique().tolist())
-    except Exception:
+    except Exception as e:
+        st.warning(f"Could not load demand history for charting: {e}")
+        inv_df = pd.DataFrame(columns=["sku_id", "period", "net_units"])
         sku_list = ["SC-001", "TBP-001", "PBP-001", "RSH-001", "CHM-001", "MGC-001"]
 
     col1, col2 = st.columns([1, 2])
@@ -224,11 +229,14 @@ with tab_forecast:
             fig = go.Figure()
 
             # Historical line
-            if show_hist:
+                        # Historical line
+            last_hist_period = None
+            if show_hist and not inv_df.empty:
                 try:
                     hist = inv_df[inv_df["sku_id"] == selected_sku].copy()
                     hist["period"] = pd.to_datetime(hist["period"], format="%Y-%m")
                     hist = hist.sort_values("period").tail(12)
+                    last_hist_period = hist["period"].max()
                     fig.add_trace(go.Scatter(
                         x=hist["period"].dt.strftime("%b %Y"),
                         y=hist["net_units"],
@@ -236,12 +244,18 @@ with tab_forecast:
                         line=dict(color="#4B8BBE", width=2),
                         mode="lines+markers",
                     ))
-                except Exception:
-                    pass
+                except Exception as e:
+                    st.caption(f"(Historical line unavailable: {e})")
 
-            # Forecast bars
+            # Forecast bars — continue the same calendar-month labeling as history
             pts = fc_data["points"]
-            months = [f"Month +{p['month_offset']}" for p in pts]
+            if last_hist_period is not None:
+                months = [
+                    (last_hist_period + pd.DateOffset(months=p["month_offset"])).strftime("%b %Y")
+                    for p in pts
+                ]
+            else:
+                months = [f"Month +{p['month_offset']}" for p in pts]
             forecasts = [p["forecast"] for p in pts]
             lower_ci  = [p["lower_ci"] for p in pts]
             upper_ci  = [p["upper_ci"] for p in pts]
@@ -336,8 +350,10 @@ with tab_alerts:
 
     if st.button("🔄 Refresh Alerts"):
         fetch_alerts.clear()
-
-    alerts_data = fetch_alerts()
+        alerts_data = fetch_alerts(force_refresh=True)
+    else:
+        alerts_data = fetch_alerts()
+        
     if alerts_data:
         col_a, col_b, col_c = st.columns(3)
         col_a.metric("Total Alerts",   alerts_data.get("total_alerts", 0))

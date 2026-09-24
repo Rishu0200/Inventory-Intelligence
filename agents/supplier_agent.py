@@ -31,8 +31,8 @@ def supplier_agent_node(state: dict) -> dict:
     else:
         supplier_text = "No supplier mapping found for the specified SKU."
 
-    # Add comparison/recommendation if multiple suppliers
-    if len(supplier_ids) > 1 and not settings.use_llm:
+
+    if len(supplier_ids) > 1:
         supplier_text += "\n\n" + _recommend_best(supplier_ids, sku_id)
 
     # RAG: retrieve catalog documents

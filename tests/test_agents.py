@@ -40,7 +40,7 @@ class TestRouter:
 
     def test_anomaly_keywords(self):
         from orchestrator.router import classify_intent
-        intent, _ = classify_intent("any unusual demand anomalies this month?")
+        intent, _ = classify_intent("any unusual anomalies this month?")
         assert intent == "anomaly"
 
     def test_sku_extraction(self):

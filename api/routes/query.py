@@ -8,7 +8,7 @@ from fastapi import APIRouter
 from fastapi.responses import StreamingResponse
 
 from api.schemas import QueryRequest, QueryResponse
-from orchestrator.graph import run_query, get_graph
+from orchestrator.graph import get_graph
 
 router = APIRouter()
 
@@ -17,15 +17,7 @@ router = APIRouter()
 async def query_endpoint(body: QueryRequest):
     """
     Ask any inventory question in natural language.
-
-    Examples:
-    - "Forecast demand for TBP-001 next 3 months"
-    - "Which SKUs need reordering?"
-    - "Who is the best supplier for RSH-001?"
-    - "Are there any demand anomalies this quarter?"
     """
-    graph = get_graph()
-
     initial_state = {
         "query":          body.question,
         "intent":         "",
@@ -35,25 +27,32 @@ async def query_endpoint(body: QueryRequest):
         "final_response": "",
     }
 
-    result = graph.invoke(initial_state)
+    try:
+        graph  = get_graph()
+        result = graph.invoke(initial_state)
+    except Exception as e:
+        return QueryResponse(
+            question=body.question,
+            intent="error",
+            sku_id="",
+            answer=f"Sorry, something went wrong processing that query. ({e})",
+            rag_context_used=False,
+        )
+
+    rag_context = result.get("rag_context", "")
+    rag_used = bool(rag_context) and rag_context.strip() != "No relevant documents found."
 
     return QueryResponse(
         question=body.question,
         intent=result.get("intent", "general"),
         sku_id=result.get("sku_id", ""),
         answer=result.get("final_response", "No response generated."),
-        rag_context_used=bool(result.get("rag_context")),
+        rag_context_used=rag_used,
     )
 
 
-@router.post("/query/stream")
 async def query_stream_endpoint(body: QueryRequest):
-    """
-    Streaming version of /query.
-    Returns Server-Sent Events (SSE) — use in Streamlit with requests.get(..., stream=True).
-    """
     async def event_generator():
-        graph = get_graph()
         initial_state = {
             "query":          body.question,
             "intent":         "",
@@ -62,10 +61,13 @@ async def query_stream_endpoint(body: QueryRequest):
             "tool_result":    "",
             "final_response": "",
         }
-        result = await asyncio.to_thread(graph.invoke, initial_state)
-        response = result.get("final_response", "No response.")
+        try:
+            graph    = get_graph()
+            result   = await asyncio.to_thread(graph.invoke, initial_state)
+            response = result.get("final_response", "No response.")
+        except Exception as e:
+            response = f"Sorry, something went wrong processing that query. ({e})"
 
-        # Stream word by word
         for word in response.split(" "):
             yield f"data: {word} \n\n"
             await asyncio.sleep(0.03)

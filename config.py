@@ -32,7 +32,7 @@ class Settings(BaseSettings):
     mlflow_experiment: str = "inventory-intelligence"
 
     # App
-    demo_mode: bool = True       # True → rule-based agents (no API key needed)
+    demo_mode: bool = True       
     log_level: str = "INFO"
     api_host: str = "0.0.0.0"
     api_port: int = 8000

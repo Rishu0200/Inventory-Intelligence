@@ -14,16 +14,16 @@ from config import Paths
 # ── Real data from supplier_directory.csv & supplier_terms.csv ───────────────
 
 SUPPLIERS = [
-    {"id": "SUP-001", "name": "Mehta Wire Industries",    "city": "Rajkot, Gujarat",          "gstin": "10AAA1456Z9", "contact": "Ramesh Mehta",   "lead": 36, "moq": 116, "credit": 30},
-    {"id": "SUP-002", "name": "Krishna Basket Works",     "city": "Pune, Maharashtra",         "gstin": "18AAA4954Z5", "contact": "Suresh Kale",    "lead": 50, "moq": 396, "credit": 45},
-    {"id": "SUP-003", "name": "Gupta Modular Systems",    "city": "Delhi",                     "gstin": "26AAA2809Z1", "contact": "Anil Gupta",     "lead": 38, "moq": 448, "credit": 30},
-    {"id": "SUP-004", "name": "Sharma Hardware Co.",      "city": "Ludhiana, Punjab",          "gstin": "18AAA9314Z6", "contact": "Raj Sharma",     "lead": 25, "moq": 266, "credit": 15},
-    {"id": "SUP-005", "name": "Lakshmi Rolling Shutters", "city": "Hyderabad, Telangana",      "gstin": "11AAA3043Z8", "contact": "Venkat Reddy",   "lead": 47, "moq": 123, "credit": 45},
-    {"id": "SUP-006", "name": "Patel Chimney Solutions",  "city": "Surat, Gujarat",            "gstin": "28AAA1085Z8", "contact": "Hitesh Patel",   "lead": 37, "moq": 116, "credit": 30},
-    {"id": "SUP-007", "name": "ATC Magic Corners",        "city": "Chennai, Tamil Nadu",       "gstin": "17AAA9737Z4", "contact": "Arjun T C",      "lead": 67, "moq": 292, "credit": 60},
-    {"id": "SUP-RM-001","name":"National Wire Suppliers", "city": "Mumbai, Maharashtra",       "gstin": "19AAA5661Z3", "contact": "Deepak Joshi",   "lead": 16, "moq": 358, "credit": 15},
-    {"id": "SUP-RM-004","name":"Shree Fittings Works",    "city": "Rajkot, Gujarat",           "gstin": "13AAA3401Z7", "contact": "Jayesh Modi",    "lead": 17, "moq": 122, "credit": 15},
-    {"id": "SUP-RM-005","name":"Papercraf Packaging",     "city": "Nashik, Maharashtra",       "gstin": "12AAA2511Z1", "contact": "Prakash Jadhav", "lead": 34, "moq": 160, "credit": 30},
+    {"id": "SUP-001", "name": "Mehta Wire Industries",    "city": "Rajkot, Gujarat",          "gstin": "10AAA1456Z9", "contact": "Ramesh Mehta",   "lead": 36, "moq": 116, "credit": 30,"penalty": "2% per week"},
+    {"id": "SUP-002", "name": "Krishna Basket Works",     "city": "Pune, Maharashtra",         "gstin": "18AAA4954Z5", "contact": "Suresh Kale",    "lead": 50, "moq": 396, "credit": 45,"penalty": "1.5% per week"},
+    {"id": "SUP-003", "name": "Gupta Modular Systems",    "city": "Delhi",                     "gstin": "26AAA2809Z1", "contact": "Anil Gupta",     "lead": 38, "moq": 448, "credit": 30,"penalty": "2% per week"},
+    {"id": "SUP-004", "name": "Sharma Hardware Co.",      "city": "Ludhiana, Punjab",          "gstin": "18AAA9314Z6", "contact": "Raj Sharma",     "lead": 25, "moq": 266, "credit": 15,"penalty": "1% per week"},
+    {"id": "SUP-005", "name": "Lakshmi Rolling Shutters", "city": "Hyderabad, Telangana",      "gstin": "11AAA3043Z8", "contact": "Venkat Reddy",   "lead": 47, "moq": 123, "credit": 45,"penalty": "1.5% per week"},
+    {"id": "SUP-006", "name": "Patel Chimney Solutions",  "city": "Surat, Gujarat",            "gstin": "28AAA1085Z8", "contact": "Hitesh Patel",   "lead": 37, "moq": 116, "credit": 30,"penalty": "2% per week"},
+    {"id": "SUP-007", "name": "ATC Magic Corners",        "city": "Chennai, Tamil Nadu",       "gstin": "17AAA9737Z4", "contact": "Arjun T C",      "lead": 67, "moq": 292, "credit": 60,"penalty": "1% per week"},
+    {"id": "SUP-RM-001","name":"National Wire Suppliers", "city": "Mumbai, Maharashtra",       "gstin": "19AAA5661Z3", "contact": "Deepak Joshi",   "lead": 16, "moq": 358, "credit": 15,"penalty": "1% per week"},
+    {"id": "SUP-RM-004","name":"Shree Fittings Works",    "city": "Rajkot, Gujarat",           "gstin": "13AAA3401Z7", "contact": "Jayesh Modi",    "lead": 17, "moq": 122, "credit": 15,"penalty": "1% per week"},
+    {"id": "SUP-RM-005","name":"Papercraf Packaging",     "city": "Nashik, Maharashtra",       "gstin": "12AAA2511Z1", "contact": "Prakash Jadhav", "lead": 34, "moq": 160, "credit": 30,"penalty": "1% per week"},
 ]
 
 SUPPLIER_SKU = {

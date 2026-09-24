@@ -4,7 +4,7 @@ Checks current stock vs computed ROP and raises alerts.
 """
 from __future__ import annotations
 import pandas as pd
-from orchestrator.tools import check_stock, compute_rop
+from orchestrator.tools import check_stock, compute_rop, retrieve_docs
 from config import settings, Paths
 
 
@@ -24,7 +24,6 @@ def reorder_agent_node(state: dict) -> dict:
     # RAG context: pull relevant PO documents for the SKU
     rag_result = ""
     try:
-        from orchestrator.tools import retrieve_docs
         rag_key = f"purchase order {sku_id} reorder" if sku_id else "low stock reorder"
         rag_result = retrieve_docs.invoke({"query": rag_key, "doc_type": "PO", "k": 3})
     except Exception:

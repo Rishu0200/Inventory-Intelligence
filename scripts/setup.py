@@ -57,7 +57,7 @@ def main():
     print(f"  ✅ Setup complete in {elapsed:.0f}s")
     print(f"{'='*60}")
     print("\nNext steps:")
-    print("  1. Copy .env.example → .env  (add OPENAI_API_KEY for LLM mode)")
+    print("  1. Copy .env.example → .env  (add GROQ_API_KEY for LLM mode)")
     print("  2. Start API:      uvicorn api.main:app --reload")
     print("  3. Start frontend: streamlit run frontend/app.py")
     print("  4. Open API docs:  http://localhost:8000/docs\n")

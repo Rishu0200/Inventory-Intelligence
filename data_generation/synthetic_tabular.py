@@ -48,7 +48,15 @@ def _extend_demand_history(seed_df: pd.DataFrame, target_rows: int = 2000) -> pd
                 "channel": np.random.choice(channels),
             })
 
-    base = pd.DataFrame(rows).reset_index()
+    base = pd.DataFrame(rows).reset_index(drop=True)
+    n_grid = len(base)
+
+    # If target_rows exceeds the natural (month × SKU) grid size, cycle the grid
+    # rather than silently truncating to whichever is smaller.
+    if len(synthetic_nums) > n_grid:
+        reps = (len(synthetic_nums) // n_grid) + 1
+        base = pd.concat([base] * reps, ignore_index=True)
+
     n = min(len(base), len(synthetic_nums))
     result = base.iloc[:n].copy()
     result["units_sold"]     = synthetic_nums["units_sold"].values[:n]
@@ -61,14 +69,25 @@ def _extend_demand_history(seed_df: pd.DataFrame, target_rows: int = 2000) -> pd
 
 
 def _extend_purchase_orders(seed_df: pd.DataFrame, target_rows: int = 800) -> pd.DataFrame:
-    """Bootstrap purchase orders with realistic variation."""
+    """Bootstrap purchase orders with realistic variation, including dates/delays."""
     result = seed_df.sample(n=target_rows, replace=True).reset_index(drop=True)
+
     price_noise = np.random.normal(1, 0.08, len(result))
     qty_noise   = np.random.normal(1, 0.15, len(result))
     result["qty_ordered"]   = (result["qty_ordered"]   * qty_noise).clip(lower=10).round(0).astype(int)
     result["rate_per_unit_inr"] = (result["rate_per_unit_inr"] * price_noise).round(2)
     result["po_value_inr"]  = (result["qty_ordered"] * result["rate_per_unit_inr"]).round(2)
     result["po_number"]     = [f"SYN-PO-{i:05d}" for i in range(len(result))]
+
+    # Jitter dates so synthetic rows aren't just copies of the same 225 delay patterns
+    if "po_date" in result.columns:
+        result["po_date"] = pd.to_datetime(result["po_date"]) + pd.to_timedelta(
+            np.random.randint(-15, 15, len(result)), unit="D"
+        )
+    if "delay_days" in result.columns:
+        delay_noise = np.random.normal(0, 3, len(result)).round(0).astype(int)
+        result["delay_days"] = (result["delay_days"] + delay_noise).clip(lower=-5)
+
     return result
 
 

@@ -9,12 +9,6 @@ def get_llm(temperature: float = 0.3, max_tokens: int = 512):
     Args:
         temperature: 0.0 = deterministic, 1.0 = creative
         max_tokens:  Max tokens in the response
-
-    Usage:
-        from orchestrator.llm_factory import get_llm
-        llm = get_llm()
-        response = llm.invoke("Your prompt here")
-        print(response.content)
     """
     provider = settings.llm_provider.lower()
 

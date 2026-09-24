@@ -80,15 +80,21 @@ def compute_rop(sku_id: str) -> str:
     avg_monthly  = sku_demand.mean()
     avg_daily    = avg_monthly / 30.0
     std_monthly  = sku_demand.std(ddof=0)
-    safety_stock = 1.64 * std_monthly   # 95% service level
+    std_daily = std_monthly / 30.0
 
     # Lead time from supplier_terms
     term_row = terms_df[terms_df["skus_supplied"].str.contains(sku_id, na=False)]
+    lead_time_is_assumed = term_row.empty
     lead_time = float(term_row["lead_time_days"].iloc[0]) if not term_row.empty else 30.0
 
+    safety_stock = 1.64 * std_daily * (lead_time ** 0.5)
     rop = avg_daily * lead_time + safety_stock
     inv_row = inv_df[inv_df["sku_id"] == sku_id]
     current = float(inv_row["total_available"].iloc[0]) if not inv_row.empty else 0
+    lead_time_info = f"  Lead time: {lead_time:.0f} days"
+    if lead_time_is_assumed:
+        lead_time_info += " (assumed — no supplier record found)"
+    lead_time_info += "\n"
 
     alert = "⚠️ REORDER NOW" if current < rop else "✓ Stock OK"
     return (
@@ -111,10 +117,17 @@ def retrieve_docs(query: str, doc_type: str = "all", k: int = 5) -> str:
     """
     from config import settings as s
     results = []
-    if doc_type in ("PO", "all"):
-        results += retrieve(query, s.chroma_collection_pos,   k=k, where={"doc_type": "PO"} if doc_type == "PO" else None)
-    if doc_type in ("catalog", "all"):
-        results += retrieve(query, s.chroma_collection_catalogs, k=k)
+
+    if doc_type == "PO":
+        results = retrieve(query, s.chroma_collection_pos, k=k)
+    elif doc_type == "catalog":
+        results = retrieve(query, s.chroma_collection_catalogs, k=k)
+    else:  # "all" — split k evenly across both collections so neither is starved
+        half = max(1, k // 2)
+        po_results  = retrieve(query, s.chroma_collection_pos, k=half)
+        cat_results = retrieve(query, s.chroma_collection_catalogs, k=k - half)
+        results = po_results + cat_results
+
     return format_context(results[:k])
 
 
