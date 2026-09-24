@@ -32,11 +32,13 @@ app_state = AppState()
 async def lifespan(app: FastAPI):
     import threading
     def _load():
+        from cache.redis_client import cache_set
         print("⚙️  Loading ML models (background)...")
         try:
             from knowledge.feature_store.demand_model import load_model
             app_state.xgb_model = load_model()
             app_state.models_ready = app_state.xgb_model is not None
+            cache_set("models_ready", app_state.models_ready, ttl_seconds=None)
             print(f"   XGBoost: {'✓' if app_state.models_ready else '✗ not found'}")
         except Exception as e:
             print(f"   XGBoost load failed: {e}")
@@ -98,10 +100,16 @@ app.include_router(forecast.router, prefix="/api", tags=["Forecast"])
 
 @app.get("/ping", response_model=HealthResponse, tags=["Health"])
 def ping():
+    from cache.redis_client import cache_get
+    # Check Redis first (works across processes/instances); fall back to this
+    # process's own in-memory flag if Redis has nothing yet (e.g. right at boot).
+    models_ready = cache_get("models_ready")
+    if models_ready is None:
+        models_ready = app_state.models_ready
     return HealthResponse(
         status="ok",
         demo_mode=settings.demo_mode,
-        models_ready=app_state.models_ready,
+        models_ready=bool(models_ready),
         chroma_docs=app_state.chroma_docs,
     )
 

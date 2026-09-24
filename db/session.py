@@ -1,6 +1,3 @@
-"""
-db/session.py — SQLAlchemy engine + session factory.
-"""
 from __future__ import annotations
 from contextlib import contextmanager
 from typing import Generator
@@ -20,6 +17,9 @@ def _build_engine():
         # SQLite needs this flag to be usable across FastAPI's threaded requests
         return create_engine(url, connect_args={"check_same_thread": False})
 
+    # Neon/Supabase are serverless Postgres — pool_pre_ping avoids errors from
+    # connections that the provider silently closed after a period of idleness.
+    # NullPool-ish small pool size fits comfortably within free-tier connection caps.
     return create_engine(
         url,
         pool_pre_ping=True,

@@ -26,6 +26,9 @@ class Settings(BaseSettings):
     # ChromaDB
     chroma_collection_pos: str = "purchase_orders"
     chroma_collection_catalogs: str = "supplier_catalogs"
+    chroma_cloud_api_key: str = ""
+    chroma_cloud_tenant: str = ""
+    chroma_cloud_database: str = ""
 
     # MLflow
     mlflow_tracking_uri: str = "http://localhost:5000"

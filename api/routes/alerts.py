@@ -3,11 +3,9 @@ GET /api/alerts — Returns current reorder and anomaly alerts for all SKUs.
 Results cached for 10 minutes to avoid repeated model inference.
 """
 from __future__ import annotations
-from datetime import datetime, timedelta
-
 import pandas as pd
 from fastapi import APIRouter
-
+from datetime import datetime, timedelta
 from api.schemas import AlertItem, AlertsResponse
 from config import Paths
 
@@ -34,13 +32,6 @@ def _set_cached(key: str, data):
 
 @router.get("/alerts", response_model=AlertsResponse)
 def get_alerts(refresh: bool = False):
-    """
-    Scan all SKUs and return:
-    - Reorder alerts: SKUs at or below their reorder point
-    - Anomaly alerts: SKUs flagged by Isolation Forest
-
-    Use ?refresh=true to bypass the 10-minute cache.
-    """
     cached = None if refresh else _get_cached("alerts")
     if cached:
         return cached

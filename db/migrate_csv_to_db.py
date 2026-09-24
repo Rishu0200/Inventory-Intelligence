@@ -1,13 +1,3 @@
-"""
-db/migrate_csv_to_db.py — ONE-TIME migration: data/raw/*.csv → database.
-
-Run this once (locally, against Neon/Supabase) after setting DATABASE_URL.
-After this, the live app never reads the CSVs again — db/session.py is the
-single source of truth. Safe to re-run: it wipes and reloads each table.
-
-Usage:
-    python -m db.migrate_csv_to_db
-"""
 from __future__ import annotations
 import sys
 from pathlib import Path
