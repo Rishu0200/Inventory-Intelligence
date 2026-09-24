@@ -35,7 +35,18 @@ class Settings(BaseSettings):
     demo_mode: bool = True       
     log_level: str = "INFO"
     api_host: str = "0.0.0.0"
-    api_port: int = 8000
+    api_port: int = 8000\
+
+    database_url: str = ""     # Neon/Supabase connection string
+    redis_url: str = ""        # Upstash REST URL
+    redis_token: str = ""      # Upstash REST token
+    chroma_cloud_api_key: str = ""
+    chroma_cloud_tenant: str = ""
+    chroma_cloud_database: str = ""
+    r2_access_key: str = ""
+    r2_secret_key: str = ""
+    r2_bucket: str = ""
+    r2_endpoint: str = ""
 
     @property
     def use_llm(self) -> bool:
