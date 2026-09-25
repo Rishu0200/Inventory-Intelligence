@@ -1,0 +1,7 @@
+-r requirements-api.txt
+
+# Experiment tracking
+mlflow>=2.16.0
+
+# R2 upload (artifacts)
+boto3>=1.34.0

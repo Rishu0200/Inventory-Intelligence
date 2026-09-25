@@ -5,8 +5,6 @@ Model: all-MiniLM-L6-v2 (22MB, no API key needed).
 from __future__ import annotations
 import chromadb
 from chromadb.utils import embedding_functions
-
-
 from config import Paths, settings
 
 
@@ -22,9 +20,7 @@ def get_client() -> chromadb.PersistentClient:
 
 
 def get_embedding_fn():
-    return embedding_functions.FastEmbedEmbeddingFunction(
-        model_name="BAAI/bge-small-en-v1.5"
-    )
+    return embedding_functions.ONNXMiniLM_L6_V2()
 
 
 def get_collection(client: chromadb.PersistentClient,

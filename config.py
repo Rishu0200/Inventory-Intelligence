@@ -21,7 +21,7 @@ class Settings(BaseSettings):
     # LLM
     llm_provider: str = "groq"
     groq_api_key: str = ""
-    groq_model: str = "llama-3.3-70b-versatile"
+    groq_model: str = "openai/gpt-oss-120b"
 
     # ChromaDB
     chroma_collection_pos: str = "purchase_orders"

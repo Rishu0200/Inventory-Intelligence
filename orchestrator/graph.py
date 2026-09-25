@@ -35,9 +35,21 @@ def route_selector(state: InventoryState) -> str:
         "reorder":  "reorder_agent",
         "supplier": "supplier_agent",
         "anomaly":  "anomaly_agent",
-        "general":  "demand_agent",   # fallback
+        "general":  "general_node",   
     }
-    return mapping.get(intent, "demand_agent")
+    return mapping.get(intent, "general_node")
+
+def general_node(state: InventoryState) -> dict:
+    return {
+        "tool_result": (
+            "I'm an inventory intelligence assistant for Uninox Houseware. "
+            "I can help with demand forecasts, reorder alerts, supplier "
+            "recommendations, and anomaly detection. Try asking about a "
+            "specific SKU, or one of: \"which SKUs need reordering?\", "
+            "\"who's the best supplier for X?\", \"any demand anomalies?\""
+        ),
+        "rag_context": "",
+    }
 
 
 
@@ -61,8 +73,12 @@ def synthesiser_node(state: InventoryState) -> dict:
             f"User query: {state['query']}\n\n"
             f"Analysis result:\n{tool_result}\n\n"
             f"Supporting document context:\n{context_snippet}\n\n"
-            "Give a clear, concise, actionable response. "
-            "Use specific numbers from the analysis. Be direct."
+            "Give a clear, concise, actionable response. Use specific numbers "
+            "from the analysis. Be direct.\n\n"
+            "IMPORTANT: Use only the dates/periods that actually appear in the "
+            "analysis result above. Do not relabel historical data as \"current\" "
+            "or \"this month\" unless the analysis result explicitly says so — "
+            "state the real period (e.g. \"Dec 2023\") instead."
         )
         resp = llm.invoke(prompt)
         return {"final_response": resp.content.strip()}
@@ -95,6 +111,7 @@ def build_graph() -> StateGraph:
     workflow.add_node("reorder_agent",  reorder_fn)
     workflow.add_node("supplier_agent", supplier_fn)
     workflow.add_node("anomaly_agent",  anomaly_fn)
+    workflow.add_node("general_node",   general_node)
     workflow.add_node("synthesiser",    synthesiser_node)
 
     # Entry point
@@ -109,11 +126,12 @@ def build_graph() -> StateGraph:
             "reorder_agent":  "reorder_agent",
             "supplier_agent": "supplier_agent",
             "anomaly_agent":  "anomaly_agent",
+            "general_node":   "general_node",
         },
     )
 
     # All agents flow to synthesiser
-    for agent in ["demand_agent", "reorder_agent", "supplier_agent", "anomaly_agent"]:
+    for agent in ["demand_agent", "reorder_agent", "supplier_agent", "anomaly_agent", "general_node"]:
         workflow.add_edge(agent, "synthesiser")
 
     workflow.add_edge("synthesiser", END)

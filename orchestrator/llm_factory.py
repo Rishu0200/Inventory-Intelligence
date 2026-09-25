@@ -2,7 +2,7 @@ from __future__ import annotations
 from config import settings
 
 
-def get_llm(temperature: float = 0.3, max_tokens: int = 512):
+def get_llm(temperature: float = 0.3, max_tokens: int = 512, reasoning_effort: str = "low"):
     """
     Return an instantiated LangChain chat model (Groq / Llama 3.3).
 
@@ -22,4 +22,5 @@ def get_llm(temperature: float = 0.3, max_tokens: int = 512):
         api_key=settings.groq_api_key,
         temperature=temperature,
         max_tokens=max_tokens,
+        reasoning_effort=reasoning_effort,
     )

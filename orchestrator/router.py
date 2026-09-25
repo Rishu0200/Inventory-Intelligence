@@ -30,10 +30,13 @@ _KEYWORDS: dict[str, list[str]] = {
         "best supplier", "which supplier", "source",
     ],
     "anomaly": [
-        "anomaly", "unusual", "spike", "outlier", "alert", "abnormal",
-        "strange", "unexpected", "flag", "detect", "problem", "issue",
+        "anomaly", "anomalies", "unusual", "spike", "spikes", "outlier",
+        "outliers", "alert", "abnormal", "strange", "unexpected", "flag",
+        "detect", "problem", "problems", "issue", "issues",
     ],
 }
+
+_TIE_BREAK_PRIORITY = ["anomaly", "supplier", "reorder", "demand"]
 
 
 def classify_intent(query: str) -> tuple[str, str]:
@@ -48,7 +51,7 @@ def classify_intent(query: str) -> tuple[str, str]:
             if kw in q_lower:
                 scores[intent] += 1
 
-    best_intent = max(scores, key=lambda k: scores[k])
+    best_intent = max(scores, key=lambda k: (scores[k], -_TIE_BREAK_PRIORITY.index(k)))
     best_score  = scores[best_intent]
 
     if best_score > 0:
@@ -63,7 +66,7 @@ def classify_intent(query: str) -> tuple[str, str]:
 def _llm_classify(query: str) -> str:
     """FIX #15: strip punctuation from the LLM's response before matching."""
     try:
-        llm = get_llm(temperature=0, max_tokens=10)
+        llm = get_llm(temperature=0, max_tokens=150)
         prompt = (
             "Classify this inventory query into exactly one word: "
             "demand / reorder / supplier / anomaly / general\n\n"
