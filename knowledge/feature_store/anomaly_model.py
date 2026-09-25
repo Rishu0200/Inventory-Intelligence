@@ -57,18 +57,17 @@ def train_isolation_forest(contamination: float = 0.05) -> tuple:
 
 
 def save_anomaly_model(model: IsolationForest, scaler: StandardScaler):
-    os.makedirs(Paths.MODELS, exist_ok=True)
-    with open(Paths.MODELS / "anomaly_iso.pkl", "wb") as f:
-        pickle.dump({"model": model, "scaler": scaler}, f)
-    print(f"[anomaly_model] Saved → {Paths.MODELS / 'anomaly_iso.pkl'}")
+    from storage.r2_client import upload_bytes
+    upload_bytes("anomaly_iso.pkl", pickle.dumps({"model": model, "scaler": scaler}))
+    print("[anomaly_model] Saved → anomaly_iso.pkl")
 
 
 def load_anomaly_model() -> tuple[IsolationForest, StandardScaler] | tuple[None, None]:
-    path = Paths.MODELS / "anomaly_iso.pkl"
-    if not path.exists():
+    from storage.r2_client import download_bytes
+    data = download_bytes("anomaly_iso.pkl")
+    if data is None:
         return None, None
-    with open(path, "rb") as f:
-        obj = pickle.load(f)
+    obj = pickle.loads(data)
     return obj["model"], obj["scaler"]
 
 

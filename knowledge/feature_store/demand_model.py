@@ -59,21 +59,16 @@ def train_xgboost(features: pd.DataFrame) -> xgb.XGBRegressor:
     return final_model, float(avg_rmse)
 
 
-def save_model(model: xgb.XGBRegressor, name: str = "demand_xgb.pkl") -> Path:
-    os.makedirs(Paths.MODELS, exist_ok=True)
-    dest = Paths.MODELS / name
-    with open(dest, "wb") as f:
-        pickle.dump(model, f)
-    print(f"[demand_model] Saved model → {dest}")
-    return dest
+def save_model(model: xgb.XGBRegressor, name: str = "demand_xgb.pkl") -> None:
+    from storage.r2_client import upload_bytes
+    upload_bytes(name, pickle.dumps(model))
+    print(f"[demand_model] Saved model → {name}")
 
 
 def load_model(name: str = "demand_xgb.pkl") -> xgb.XGBRegressor | None:
-    path = Paths.MODELS / name
-    if not path.exists():
-        return None
-    with open(path, "rb") as f:
-        return pickle.load(f)
+    from storage.r2_client import download_bytes
+    data = download_bytes(name)
+    return pickle.loads(data) if data is not None else None
 
 
 # ── ARIMA per-SKU ─────────────────────────────────────────────────────────────
