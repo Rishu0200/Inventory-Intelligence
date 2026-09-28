@@ -11,12 +11,13 @@ from api.schemas import AlertsResponse, QueryRequest, QueryResponse
 from orchestrator.graph import get_graph
 from auth.dependencies import get_current_user
 from db.models import User
+from api.rate_limit import rate_limit
 
 router = APIRouter()
-
+_query_limit = rate_limit("query", per_user=10, global_limit=25)
 
 @router.post("/query", response_model=QueryResponse)
-async def query_endpoint(body: QueryRequest, user: User = Depends(get_current_user)):
+async def query_endpoint(body: QueryRequest, user: User = Depends(_query_limit)):
     """
     Ask any inventory question in natural language.
     """
@@ -53,7 +54,7 @@ async def query_endpoint(body: QueryRequest, user: User = Depends(get_current_us
     )
 
 
-async def query_stream_endpoint(body: QueryRequest, user: User = Depends(get_current_user)):
+async def query_stream_endpoint(body: QueryRequest, user: User = Depends(_query_limit)):
     async def event_generator():
         initial_state = {
             "query":          body.question,

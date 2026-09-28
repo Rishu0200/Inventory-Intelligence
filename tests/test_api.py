@@ -58,6 +58,13 @@ class FakeSession:
     def first(self): return None
     def get(self, *a, **k): return None
 
+@pytest.fixture(autouse=True)
+def no_rate_limit_backend():
+    """Keep rate limiting out of every test by default (no real Redis, no cross-test counts)."""
+    with patch("api.rate_limit.rate_limit_check", return_value=True), \
+         patch("api.routes.auth.rate_limit_check", return_value=True):
+        yield    
+
 
 # ── Health (public) ───────────────────────────────────────────────────────────
 
@@ -242,3 +249,19 @@ class TestForecastEndpoint:
 
     def test_forecast_horizon_out_of_range(self, client):
         assert client.get("/api/forecast/TBP-001?horizon=15").status_code == 422
+
+# ── Rate limiting ─────────────────────────────────────────────────────────────
+
+class TestRateLimit:
+    def test_query_returns_429_when_limited(self, client):
+        with patch("api.rate_limit.rate_limit_check", return_value=False):
+            r = client.post("/api/query", json={"question": "forecast for TBP-001"})
+        assert r.status_code == 429
+        assert "retry-after" in r.headers
+
+    def test_login_returns_429_when_limited(self, app_instance, anon_client):
+        app_instance.dependency_overrides[get_session_dependency] = lambda: FakeSession()
+        with patch("api.routes.auth.rate_limit_check", return_value=False):
+            r = anon_client.post("/api/auth/login",
+                                 data={"username": "a@example.com", "password": "x"})
+        assert r.status_code == 429
