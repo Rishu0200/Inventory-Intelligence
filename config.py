@@ -51,6 +51,11 @@ class Settings(BaseSettings):
     r2_bucket: str = ""
     r2_endpoint: str = ""
 
+    ## JWT Authentication
+    jwt_secret_key: str = ""       
+    jwt_algorithm: str = "HS256"
+    jwt_expire_minutes: int = 720
+
     @property
     def use_llm(self) -> bool:
         return bool(self.groq_api_key) and not self.demo_mode

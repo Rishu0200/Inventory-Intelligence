@@ -3,10 +3,14 @@ GET /api/forecast/{sku_id} — Demand forecast endpoint.
 Returns point forecast + 90% confidence intervals for N months ahead.
 """
 from __future__ import annotations
-from fastapi import APIRouter, HTTPException, Query
+from fastapi import APIRouter, HTTPException, Query, Depends
 
 from api.schemas import ForecastResponse, ForecastPoint
 from knowledge.feature_store.demand_model import forecast_sku, load_model
+from auth.dependencies import get_current_user
+from db.models import User, DemandRecord
+from db.session import get_session
+
 
 router = APIRouter()
 _model = None   # lazy-loaded
@@ -24,6 +28,7 @@ def get_forecast_endpoint(
     sku_id:  str,
     horizon: int = Query(default=3, ge=1, le=12,
                          description="Forecast horizon in months (1-12)"),
+    user: User = Depends(get_current_user)
 ):
     """
     Monthly demand forecast for a specific SKU.
@@ -38,8 +43,7 @@ def get_forecast_endpoint(
     if not result["forecast"]:
         raise HTTPException(
             status_code=404,
-            detail=f"SKU '{sku_id}' not found in demand history. "
-                   f"Check data/raw/demand_history.csv for valid SKU IDs.",
+            detail=f"SKU '{sku_id}' not found in demand history. ",
         )
 
     points = [
@@ -65,6 +69,7 @@ def get_forecast_endpoint(
 @router.get("/forecast", response_model=list[ForecastResponse], tags=["Forecast"])
 def get_all_forecasts(
     horizon: int = Query(default=3, ge=1, le=6),
+    user: User = Depends(get_current_user)
 ):
     """
     Forecast for all SKUs in demand history.
@@ -74,9 +79,11 @@ def get_all_forecasts(
     from config import Paths
 
     try:
-        df = pd.read_csv(Paths.DATA_RAW / "demand_history.csv")
-        sku_ids = df["sku_id"].unique().tolist()
-    except Exception:
+        with get_session() as session:
+            rows = session.query(DemandRecord.sku_id).distinct().all()
+        sku_ids = sorted(r[0] for r in rows)
+    except Exception as e:
+        print(f"[forecast] Could not load SKU list from database: {e}")
         sku_ids = ["SC-001", "TBP-001", "PBP-001", "RSH-001", "CHM-001"]
 
     model = _get_model()

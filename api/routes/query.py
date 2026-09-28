@@ -4,17 +4,19 @@ Runs the LangGraph orchestrator and returns the final response.
 """
 from __future__ import annotations
 import asyncio
-from fastapi import APIRouter
+from fastapi import APIRouter, Depends
 from fastapi.responses import StreamingResponse
 
-from api.schemas import QueryRequest, QueryResponse
+from api.schemas import AlertsResponse, QueryRequest, QueryResponse
 from orchestrator.graph import get_graph
+from auth.dependencies import get_current_user
+from db.models import User
 
 router = APIRouter()
 
 
 @router.post("/query", response_model=QueryResponse)
-async def query_endpoint(body: QueryRequest):
+async def query_endpoint(body: QueryRequest, user: User = Depends(get_current_user)):
     """
     Ask any inventory question in natural language.
     """
@@ -51,7 +53,7 @@ async def query_endpoint(body: QueryRequest):
     )
 
 
-async def query_stream_endpoint(body: QueryRequest):
+async def query_stream_endpoint(body: QueryRequest, user: User = Depends(get_current_user)):
     async def event_generator():
         initial_state = {
             "query":          body.question,

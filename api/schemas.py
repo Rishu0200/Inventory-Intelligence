@@ -64,3 +64,22 @@ class HealthResponse(BaseModel):
     demo_mode:    bool
     models_ready: bool
     chroma_docs:  int
+
+class InventoryItem(BaseModel):
+    sku_id:          str
+    item_name:       str
+    qty_on_hand:     float
+    total_available: float
+    reorder_point:   float
+    days_of_stock:   Optional[float] = None
+    status:          str
+
+
+class DemandPoint(BaseModel):
+    period:    str    # "YYYY-MM"
+    net_units: float
+
+
+class DemandHistoryResponse(BaseModel):
+    sku_id: str
+    points: list[DemandPoint]

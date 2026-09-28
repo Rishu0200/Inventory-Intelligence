@@ -1,11 +1,11 @@
-from eval.groundedness_judge import judge_answer
+from knowledge.feature_store.demand_model import load_model, forecast_sku
+from knowledge.feature_store.anomaly_model import load_anomaly_model
 
-from config import settings
-print(settings.groq_model)
+model = load_model()
+print("XGBoost loaded from Storage:", model is not None)
 
-result = judge_answer(
-    question="Forecast demand for TBP-001 next 3 months",
-    context="Some sample context here.",
-    answer="Demand for TBP-001 is expected to be around 300 units.",
-)
-print(result)
+anomaly_model, scaler = load_anomaly_model()
+print("Isolation Forest loaded from Storage:", anomaly_model is not None)
+
+result = forecast_sku("RSH-001", horizon=3, model=model)
+print("Forecast:", result["forecast"])

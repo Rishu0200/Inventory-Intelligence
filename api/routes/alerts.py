@@ -4,12 +4,20 @@ Results cached for 10 minutes to avoid repeated model inference.
 """
 from __future__ import annotations
 import pandas as pd
-from fastapi import APIRouter
+from fastapi import APIRouter, Depends
 from datetime import datetime, timedelta
 from api.schemas import AlertItem, AlertsResponse
 from config import Paths
+from auth.dependencies import get_current_user
+from db.models import User, InventorySnapshot
+from db.session import get_session
+from cache.redis_client import cache_get, cache_set, cache_delete
+
 
 router = APIRouter()
+
+_CACHE_KEY = "alerts:all"
+_CACHE_TTL_SECONDS = 600
 
 # ── Simple in-memory TTL cache ────────────────────────────────────────────────
 _cache: dict = {}
@@ -31,10 +39,13 @@ def _set_cached(key: str, data):
 # ── Route ─────────────────────────────────────────────────────────────────────
 
 @router.get("/alerts", response_model=AlertsResponse)
-def get_alerts(refresh: bool = False):
-    cached = None if refresh else _get_cached("alerts")
-    if cached:
-        return cached
+def get_alerts(refresh: bool = False, user: User = Depends(get_current_user)):
+    if refresh:
+        cache_delete(_CACHE_KEY)
+    else:
+        cached = cache_get(_CACHE_KEY)
+        if cached:
+            return AlertsResponse(**cached)
 
     alerts: list[AlertItem] = []
     alerts += _reorder_alerts()
@@ -50,41 +61,44 @@ def get_alerts(refresh: bool = False):
         anomaly_alerts=sum(1 for a in alerts if a.alert_type == "anomaly"),
         alerts=alerts,
     )
-    _set_cached("alerts", response)
+    cache_set(_CACHE_KEY, response.model_dump(mode="json"), ttl_seconds=_CACHE_TTL_SECONDS)
     return response
 
 
 # ── Helpers ───────────────────────────────────────────────────────────────────
 
 def _reorder_alerts() -> list[AlertItem]:
-    alerts = []
+    alerts: list[AlertItem] = []
     try:
-        inv = pd.read_csv(Paths.DATA_RAW / "inventory_history.csv")
-        below_rop = inv[inv["total_available"] <= inv["reorder_point"]]
+        with get_session() as session:
+            rows = session.query(InventorySnapshot).all()
 
-        for _, row in below_rop.iterrows():
-            gap      = float(row["total_available"] - row["reorder_point"])
-            severity = "high" if gap < -50 else "medium" if gap < 0 else "low"
-            alerts.append(AlertItem(
-                sku_id=str(row["sku_id"]),
-                item_name=str(row.get("item_name", row["sku_id"])),
-                alert_type="reorder",
-                severity=severity,
-                current_stock=float(row["total_available"]),
-                reorder_point=float(row["reorder_point"]),
-                gap=round(gap, 1),
-                message=(
-                    f"Stock {row['total_available']:.0f} ≤ ROP {row['reorder_point']:.0f}. "
-                    f"Place order immediately ({row.get('status','')})."
-                ),
-            ))
+            for row in rows:
+                if row.total_available > row.reorder_point:
+                    continue
+
+                gap      = float(row.total_available - row.reorder_point)
+                severity = "high" if gap < -50 else "medium" if gap < 0 else "low"
+                alerts.append(AlertItem(
+                    sku_id=str(row.sku_id),
+                    item_name=str(row.get("item_name", row.sku_id)),
+                    alert_type="reorder",
+                    severity=severity,
+                    current_stock=float(row.total_available),
+                    reorder_point=float(row.reorder_point),
+                    gap=round(gap, 1),
+                    message=(
+                        f"Stock {row.total_available:.0f} ≤ ROP {row.reorder_point:.0f}. "
+                        f"Place order immediately ({row.status or ''})."
+                    ),
+                ))
     except Exception as e:
         print(f"[alerts] Reorder scan failed: {e}")
     return alerts
 
 
 def _anomaly_alerts() -> list[AlertItem]:
-    alerts = []
+    alerts: list[AlertItem] = []
     try:
         from knowledge.feature_store.anomaly_model import detect_anomalies, load_anomaly_model
         model, _ = load_anomaly_model()

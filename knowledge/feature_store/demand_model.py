@@ -10,9 +10,6 @@ from pathlib import Path
 from sklearn.model_selection import TimeSeriesSplit
 from sklearn.metrics import mean_absolute_percentage_error, mean_squared_error
 import xgboost as xgb
-#import mlflow
-#import mlflow.xgboost
-
 from config import Paths, settings
 from knowledge.feature_store.feature_engineering import (
     load_demand, build_sku_features, get_feature_columns
@@ -157,8 +154,15 @@ def forecast_sku(sku_id: str,
 
 
 def train_and_save():
-    mlflow.set_tracking_uri(settings.mlflow_tracking_uri)
-    mlflow.set_experiment(settings.mlflow_experiment)
+    mlflow_available = False
+    try:
+        import mlflow
+        import mlflow.xgboost
+        mlflow.set_tracking_uri(settings.mlflow_tracking_uri)
+        mlflow.set_experiment(settings.mlflow_experiment)
+        mlflow_available = True
+    except Exception as e:
+        print(f"[demand_model] MLflow unavailable ({e}); skipping logging.")   
 
     demand   = load_demand()
     features = build_sku_features(demand)
@@ -166,16 +170,21 @@ def train_and_save():
     print(f"Training XGBoost on {len(features)} rows, "
           f"{features['sku_id'].nunique()} SKUs ...")
 
-    with mlflow.start_run(run_name="demand_xgboost"):
+    if mlflow_available:
+        with mlflow.start_run(run_name="demand_xgboost"):
+            model, rmse = train_xgboost(features)
+            mlflow.log_param("n_estimators", 300)
+            mlflow.log_param("max_depth", 5)
+            mlflow.log_metric("cv_rmse", rmse)
+            save_model(model)
+            try:
+                mlflow.xgboost.log_model(model, "model")
+            except Exception:
+                pass
+    else:
         model, rmse = train_xgboost(features)
-        mlflow.log_param("n_estimators", 300)
-        mlflow.log_param("max_depth", 5)
-        mlflow.log_metric("cv_rmse", rmse)
         save_model(model)
-        try:
-            mlflow.xgboost.log_model(model, "model")
-        except Exception:
-            pass
+        print(f"  (no mlflow) cv_rmse = {rmse:.1f}")
 
     print("✓ Demand model training complete.")
 

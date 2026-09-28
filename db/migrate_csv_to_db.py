@@ -5,18 +5,24 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
 import pandas as pd
-from datetime import datetime
 
 from config import Paths
 from db.session import engine, init_db, get_session
 from db.models import (
-    Base, DemandRecord, InventorySnapshot, Supplier, SupplierTerm,
-    PurchaseOrder,
+    DemandRecord, InventorySnapshot, Supplier, SupplierTerm, PurchaseOrder,
 )
 
 
 def _to_date(series: pd.Series):
-    return pd.to_datetime(series, errors="coerce").dt.date
+    """
+    dayfirst=True is required: this is Indian business data (DD-MM-YYYY), and
+    pandas' auto-detection can silently misparse rows where day <= 12 as
+    month-first while correctly parsing day > 12 rows as day-first — producing
+    inconsistent dates within the same column, and NaT (crash) for invalid
+    combinations like month=13.
+    """
+    dt = pd.to_datetime(series, errors="coerce", dayfirst=True)
+    return dt.dt.date.where(dt.notna(), None)
 
 
 def migrate_demand():
@@ -24,7 +30,6 @@ def migrate_demand():
     df["period"] = _to_date(df["period"])
     rows = df.to_dict("records")
     with get_session() as s:
-        s.query(DemandRecord).delete()
         s.bulk_insert_mappings(DemandRecord, rows)
     print(f"  ✓ demand_records: {len(rows)} rows")
 
@@ -34,7 +39,6 @@ def migrate_inventory():
     df["snapshot_date"] = _to_date(df["snapshot_date"])
     rows = df.to_dict("records")
     with get_session() as s:
-        s.query(InventorySnapshot).delete()
         s.bulk_insert_mappings(InventorySnapshot, rows)
     print(f"  ✓ inventory_snapshots: {len(rows)} rows")
 
@@ -43,7 +47,6 @@ def migrate_suppliers():
     df = pd.read_csv(Paths.DATA_RAW / "supplier_directory.csv")
     rows = df.to_dict("records")
     with get_session() as s:
-        s.query(Supplier).delete()
         s.bulk_insert_mappings(Supplier, rows)
     print(f"  ✓ suppliers: {len(rows)} rows")
 
@@ -54,7 +57,6 @@ def migrate_supplier_terms():
     df["last_audit_date"]   = _to_date(df.get("last_audit_date", pd.Series(dtype=str)))
     rows = df.to_dict("records")
     with get_session() as s:
-        s.query(SupplierTerm).delete()
         s.bulk_insert_mappings(SupplierTerm, rows)
     print(f"  ✓ supplier_terms: {len(rows)} rows")
 
@@ -65,7 +67,6 @@ def migrate_purchase_orders():
         df[col] = _to_date(df[col])
     rows = df.to_dict("records")
     with get_session() as s:
-        s.query(PurchaseOrder).delete()
         s.bulk_insert_mappings(PurchaseOrder, rows)
     print(f"  ✓ purchase_orders: {len(rows)} rows")
 
@@ -74,6 +75,15 @@ def main():
     print(f"Target database: {engine.url}")
     print("Creating tables (if not present)...")
     init_db()
+
+    print("\nClearing existing data (children before parents, to respect FK constraints)...")
+    with get_session() as s:
+        s.query(PurchaseOrder).delete()
+        s.query(SupplierTerm).delete()
+        s.query(DemandRecord).delete()
+        s.query(InventorySnapshot).delete()
+        s.query(Supplier).delete()
+    print("  ✓ cleared")
 
     print("\nMigrating suppliers first (FK dependency for supplier_terms/purchase_orders)...")
     migrate_suppliers()
