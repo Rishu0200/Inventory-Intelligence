@@ -10,7 +10,7 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from config import settings
 from api.schemas import HealthResponse
-from api.routes import query, alerts, forecast, auth as auth_routes
+from api.routes import query, alerts, forecast, auth as auth_routes, data as data_routes
 
 
 # ── App state (shared across requests) ───────────────────────────────────────
@@ -95,6 +95,7 @@ app.include_router(query.router,    prefix="/api", tags=["Query"])
 app.include_router(alerts.router,   prefix="/api", tags=["Alerts"])
 app.include_router(forecast.router, prefix="/api", tags=["Forecast"])
 app.include_router(auth_routes.router, prefix="/api", tags=["Auth"])
+app.include_router(data_routes.router, prefix="/api", tags=["Data"])
 
 
 # ── Health check ──────────────────────────────────────────────────────────────
