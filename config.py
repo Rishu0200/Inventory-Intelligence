@@ -56,6 +56,10 @@ class Settings(BaseSettings):
     jwt_algorithm: str = "HS256"
     jwt_expire_minutes: int = 720
 
+    #Authentication
+    cors_origins: str = ""
+
+
     @property
     def use_llm(self) -> bool:
         return bool(self.groq_api_key) and not self.demo_mode
