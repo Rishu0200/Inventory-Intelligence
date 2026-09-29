@@ -25,6 +25,7 @@ pydantic-settings>=2.5.0
 python-dotenv>=1.0.0
 psycopg2-binary>=2.9.0
 boto3>=1.34.0
+python-multipart==0.0.9
 
 argon2-cffi>=23.1.0
 pyjwt>=2.9.0
