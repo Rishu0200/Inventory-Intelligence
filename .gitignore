@@ -22,16 +22,25 @@ env/
 .ipynb_checkpoints/
 *.ipynb_checkpoints
 
-# Data — keep raw CSVs, ignore generated/processed outputs
+# Data — raw CSVs and generated PDFs are local-only inputs now
+# (the live app reads from Postgres/Chroma Cloud/Supabase Storage, not these)
 data/synthetic/purchase_orders/*.pdf
 data/synthetic/supplier_catalogs/*.pdf
+data/processed/
+data/raw/*.csv
 
+# Local dev database (SQLite fallback, only used when DATABASE_URL is unset)
+*.db
 
-# MLflow
+# MLflow (local-only, if you ever run it)
 mlruns/
 mlflow.db
 mlflow_runs/
 mlartifacts/
+
+# Local scratch/diagnostic scripts
+testing.py
+testing2.py
 
 # OS
 .DS_Store
