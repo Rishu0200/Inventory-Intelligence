@@ -1,0 +1,65 @@
+services:
+  - type: web
+    name: inventory-intelligence-api
+    runtime: python
+    plan: free
+
+    buildCommand: pip install -r requirements-api.txt
+    startCommand: uvicorn api.main:app --host 0.0.0.0 --port $PORT --workers 1
+    healthCheckPath: /ping
+
+    envVars:
+      # ── LLM ──────────────────────────────────────────────────
+      - key: LLM_PROVIDER
+        value: groq
+      - key: GROQ_MODEL
+        value: openai/gpt-oss-120b
+      - key: GROQ_API_KEY
+        sync: false
+
+      # ── App ──────────────────────────────────────────────────
+      - key: DEMO_MODE
+        value: "false"
+      - key: LOG_LEVEL
+        value: INFO
+
+      # ── Auth ─────────────────────────────────────────────────
+      - key: JWT_SECRET_KEY
+        sync: false
+      - key: JWT_ALGORITHM
+        value: HS256
+      - key: JWT_EXPIRE_MINUTES
+        value: "720"
+
+      # ── Database (Supabase Postgres, session pooler) ──────────
+      - key: DATABASE_URL
+        sync: false
+
+      # ── Vector store (Chroma Cloud) ────────────────────────────
+      - key: CHROMA_CLOUD_API_KEY
+        sync: false
+      - key: CHROMA_CLOUD_TENANT
+        sync: false
+      - key: CHROMA_CLOUD_DATABASE
+        sync: false
+
+      # ── Object storage (Supabase S3 — field names say "r2" for
+      #    historical reasons, the code is provider-agnostic) ──────
+      - key: R2_ACCESS_KEY
+        sync: false
+      - key: R2_SECRET_KEY
+        sync: false
+      - key: R2_BUCKET
+        sync: false
+      - key: R2_ENDPOINT
+        sync: false
+
+      # ── Redis (Upstash — optional; falls back to in-process if unset) ──
+      - key: REDIS_URL
+        sync: false
+      - key: REDIS_TOKEN
+        sync: false
+
+      # ── CORS ─────────────────────────────────────────────────
+      - key: CORS_ORIGINS
+        value: ""

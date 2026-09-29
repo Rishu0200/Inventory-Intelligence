@@ -54,5 +54,7 @@ boto3>=1.34.0
 argon2-cffi>=23.1.0
 pyjwt>=2.9.0
 
+psutil
+
 
  
