@@ -31,16 +31,21 @@ def check_connectivity(user: User = Depends(require_admin)):
             rsh = s.query(SupplierTerm).filter(
                 SupplierTerm.skus_supplied.contains("RSH-001")
             ).first()
+            # Extract the value WHILE the session is still open, not after
+            rsh_match = rsh.supplier_id if rsh else "NOT FOUND"
         results["supplier_terms_row_count"] = count
-        results["rsh_001_match"] = rsh.supplier_id if rsh else "NOT FOUND"
+        results["rsh_001_match"] = rsh_match
     except Exception as e:
         results["supplier_terms_query"] = f"FAILED: {e}"
 
     try:
         from knowledge.vector_store.embedder import collection_count
         from config import settings
+        results["chroma_tenant"] = settings.chroma_cloud_tenant
+        results["chroma_database"] = settings.chroma_cloud_database
         results["chroma_catalog_doc_count"] = collection_count(settings.chroma_collection_catalogs)
+        results["chroma_po_doc_count"] = collection_count(settings.chroma_collection_pos)
     except Exception as e:
-        results["chroma_catalog_doc_count"] = f"FAILED: {e}"
+        results["chroma_check"] = f"FAILED: {e}"
 
     return results
