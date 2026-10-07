@@ -6,7 +6,8 @@ from __future__ import annotations
 import pandas as pd
 from orchestrator.tools import get_supplier_info, retrieve_docs
 from config import Paths, settings
-
+from db.session import get_session
+from db.models import Supplier, SupplierTerm
 
 def supplier_agent_node(state: dict) -> dict:
     """
@@ -53,17 +54,20 @@ def supplier_agent_node(state: dict) -> dict:
 def _find_suppliers_for_sku(sku_id: str) -> list[str]:
     """Return supplier IDs that supply a given SKU."""
     try:
-        terms = pd.read_csv(Paths.DATA_RAW / "supplier_terms.csv")
-        mask  = terms["skus_supplied"].fillna("").str.contains(sku_id, case=False)
-        return terms[mask]["supplier_id"].tolist()
+        with get_session() as session:
+            rows = session.query(SupplierTerm.supplier_id, SupplierTerm.skus_supplied).all()
+        return [
+            r.supplier_id for r in rows
+            if r.skus_supplied and sku_id.lower() in r.skus_supplied.lower()
+        ]
     except Exception:
         return []
 
-
 def _all_supplier_ids() -> list[str]:
     try:
-        direc = pd.read_csv(Paths.DATA_RAW / "supplier_directory.csv")
-        return direc["supplier_id"].tolist()[:5]
+        with get_session() as session:
+            rows = session.query(Supplier.supplier_id).limit(5).all()
+        return [r[0] for r in rows]
     except Exception:
         return []
 
@@ -71,24 +75,29 @@ def _all_supplier_ids() -> list[str]:
 def _recommend_best(supplier_ids: list[str], sku_id: str) -> str:
     """Simple rule-based recommendation: shortest lead time + best on-time rate."""
     try:
-        terms = pd.read_csv(Paths.DATA_RAW / "supplier_terms.csv")
-        direc = pd.read_csv(Paths.DATA_RAW / "supplier_directory.csv")
-        merged = terms.merge(direc, on="supplier_id", how="left")
-        subset = merged[merged["supplier_id"].isin(supplier_ids)].copy()
+        with get_session() as session:
+            rows = (
+                session.query(Supplier, SupplierTerm)
+                .join(SupplierTerm, SupplierTerm.supplier_id == Supplier.supplier_id)
+                .filter(Supplier.supplier_id.in_(supplier_ids))
+                .all()
+            )
 
-        if subset.empty:
+        if not rows:
             return ""
 
-        subset["score"] = (
-            -subset["lead_time_days"].rank() +
-            subset["on_time_rate_pct"].rank()
-        )
-        best = subset.loc[subset["score"].idxmax()]
+        lead_times = pd.Series([term.lead_time_days for _, term in rows])
+        on_times   = pd.Series([sup.on_time_rate_pct for sup, _ in rows])
+        scores     = (-lead_times.rank() + on_times.rank())
+
+        best_idx = int(scores.idxmax())
+        best_sup, best_term = rows[best_idx]
+
         return (
             f"🏆 Recommended supplier for {sku_id}: "
-            f"{best.get('supplier_name', best['supplier_id'])} "
-            f"(Lead time: {best['lead_time_days']} days, "
-            f"On-time rate: {best['on_time_rate_pct']}%)"
+            f"{best_sup.supplier_name} "
+            f"(Lead time: {best_term.lead_time_days} days, "
+            f"On-time rate: {best_sup.on_time_rate_pct}%)"
         )
     except Exception:
         return ""

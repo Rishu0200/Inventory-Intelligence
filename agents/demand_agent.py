@@ -4,6 +4,9 @@ Calls get_forecast() + retrieve_docs() to answer demand-related queries.
 """
 from __future__ import annotations
 from orchestrator.tools import get_forecast, retrieve_docs
+from sqlalchemy import func
+from db.session import get_session
+from db.models import DemandRecord
 from config import settings
 
 
@@ -51,10 +54,14 @@ def demand_agent_node(state: dict) -> dict:
 def _pick_top_sku() -> str:
     """Return the SKU with highest average demand from history."""
     try:
-        import pandas as pd
-        from config import Paths
-        df = pd.read_csv(Paths.DATA_RAW / "demand_history.csv")
-        top = df.groupby("sku_id")["net_units"].mean().idxmax()
-        return str(top)
+        with get_session() as session:
+                result = (
+                    session.query(DemandRecord.sku_id, func.avg(DemandRecord.net_units))
+                    .group_by(DemandRecord.sku_id)
+                    .order_by(func.avg(DemandRecord.net_units).desc())
+                    .first()
+                )
+                top_sku = result[0] if result else None
+        return str(top_sku) if top_sku else "SC-001"
     except Exception:
         return "SC-001"
