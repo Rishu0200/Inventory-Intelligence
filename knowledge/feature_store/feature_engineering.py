@@ -8,24 +8,28 @@ import numpy as np
 from pathlib import Path
 
 from config import Paths
-
+from db.session import get_session
+from db.dataframe_utils import query_to_df
+from db.models import DemandRecord, InventorySnapshot, SupplierTerm
 
 def load_demand() -> pd.DataFrame:
-    """Load and clean demand_history.csv."""
-    df = pd.read_csv(Paths.DATA_RAW / "demand_history.csv")
-    df["period"] = pd.to_datetime(df["period"], format="%Y-%m")
+    """Load demand records from the database."""
+    with get_session() as session:
+        df = query_to_df(session, DemandRecord)
+    df["period"] = pd.to_datetime(df["period"])
     df = df.sort_values(["sku_id", "period"]).reset_index(drop=True)
     return df
 
 
 def load_inventory() -> pd.DataFrame:
-    """Load inventory_history.csv."""
-    df = pd.read_csv(Paths.DATA_RAW / "inventory_history.csv")
-    return df
+    """Load the current inventory snapshot from the database."""
+    with get_session() as session:
+        return query_to_df(session, InventorySnapshot)
 
 
 def load_supplier_terms() -> pd.DataFrame:
-    return pd.read_csv(Paths.DATA_RAW / "supplier_terms.csv")
+    with get_session() as session:
+        return query_to_df(session, SupplierTerm)
 
 
 def build_sku_features(df: pd.DataFrame) -> pd.DataFrame:
