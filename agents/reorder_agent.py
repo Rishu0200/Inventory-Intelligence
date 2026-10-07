@@ -6,6 +6,8 @@ from __future__ import annotations
 import pandas as pd
 from orchestrator.tools import check_stock, compute_rop, retrieve_docs
 from config import settings, Paths
+from db.session import get_session
+from db.models import InventorySnapshot
 
 
 def reorder_agent_node(state: dict) -> dict:
@@ -42,20 +44,21 @@ def _analyse_single(sku_id: str) -> str:
 
 
 def _scan_all_skus() -> str:
-    """Scan all SKUs and return those needing reorder."""
+    """Reads the inventory snapshot from the database, not a CSV."""
     try:
-        inv = pd.read_csv(Paths.DATA_RAW / "inventory_history.csv")
-        alerts = inv[inv["total_available"] <= inv["reorder_point"]]
+        with get_session() as session:
+            rows = session.query(InventorySnapshot).all()
+        alerts = [r for r in rows if r.total_available <= r.reorder_point]
 
-        if alerts.empty:
+        if not alerts:
             return "✓ All SKUs are above their reorder points. No immediate action needed."
 
         lines = [f"⚠️  {len(alerts)} SKU(s) at or below reorder point:\n"]
-        for _, row in alerts.iterrows():
-            gap = row["total_available"] - row["reorder_point"]
+        for row in alerts:
+            gap = row.total_available - row.reorder_point
             lines.append(
-                f"  • {row['sku_id']} ({row['item_name']}): "
-                f"Available={row['total_available']:.0f}  ROP={row['reorder_point']:.0f}  "
+                f"  • {row.sku_id} ({row.item_name}): "
+                f"Available={row.total_available:.0f}  ROP={row.reorder_point:.0f}  "
                 f"Gap={gap:+.0f}"
             )
         return "\n".join(lines)
