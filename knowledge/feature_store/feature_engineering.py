@@ -6,7 +6,7 @@ from __future__ import annotations
 import pandas as pd
 import numpy as np
 from pathlib import Path
-
+import os
 from config import Paths
 from db.session import get_session
 from db.dataframe_utils import query_to_df
@@ -79,6 +79,7 @@ def get_feature_columns() -> list[str]:
 
 
 def save_features(features: pd.DataFrame) -> Path:
+    os.makedirs(Paths.DATA_PROCESSED, exist_ok=True)
     dest = Paths.DATA_PROCESSED / "features.parquet"
     features.to_parquet(dest, index=False)
     print(f"[feature_engineering] Saved {len(features)} rows → {dest}")
