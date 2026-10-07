@@ -1,8 +1,13 @@
+"""
+LangChain @tool definitions.
+"""
 from __future__ import annotations
 import pandas as pd
 from langchain_core.tools import tool
 
 from config import Paths
+from db.session import get_session
+from db.models import InventorySnapshot, DemandRecord, SupplierTerm, Supplier
 from knowledge.feature_store.demand_model import forecast_sku, load_model
 from knowledge.feature_store.anomaly_model import detect_anomalies
 from knowledge.vector_store.retriever import retrieve, format_context
@@ -37,18 +42,19 @@ def check_stock(sku_id: str) -> str:
     """
     Check current stock level, reorder point, and days-of-stock for a SKU.
     """
-    df = pd.read_csv(Paths.DATA_RAW / "inventory_history.csv")
-    row = df[df["sku_id"] == sku_id]
-    if row.empty:
+    with get_session() as session:
+        r = session.query(InventorySnapshot).filter_by(sku_id=sku_id).first()
+
+    if r is None:
         return f"SKU {sku_id} not found in inventory."
-    r = row.iloc[0]
-    rop_gap = r["total_available"] - r["reorder_point"]
+
+    rop_gap = r.total_available - r.reorder_point
     alert   = "⚠️ REORDER NEEDED" if rop_gap <= 0 else "✓ OK"
     return (
-        f"Inventory — {sku_id} ({r['item_name']}):\n"
-        f"  On-Hand: {r['qty_on_hand']}  |  WIP: {r['qty_wip']}  |  In-Transit: {r['qty_in_transit']}\n"
-        f"  Total Available: {r['total_available']}  |  Reorder Point: {r['reorder_point']}\n"
-        f"  Days of Stock: {r['days_of_stock']}  |  Status: {r['status']}\n"
+        f"Inventory — {sku_id} ({r.item_name}):\n"
+        f"  On-Hand: {r.qty_on_hand}  |  WIP: {r.qty_wip}  |  In-Transit: {r.qty_in_transit}\n"
+        f"  Total Available: {r.total_available}  |  Reorder Point: {r.reorder_point}\n"
+        f"  Days of Stock: {r.days_of_stock}  |  Status: {r.status}\n"
         f"  Gap vs ROP: {rop_gap:+.0f} units  — {alert}"
     )
 
@@ -58,32 +64,36 @@ def compute_rop(sku_id: str) -> str:
     """
     Compute the Reorder Point (ROP) for a SKU using:
     ROP = (avg_daily_demand × lead_time_days) + safety_stock
-    FIX #9: safety_stock now scales demand variability to the lead-time window
+    Safety stock scales demand variability to the lead-time window
     (std_daily × sqrt(lead_time_days)) instead of using raw monthly std.
     """
-    demand_df = pd.read_csv(Paths.DATA_RAW / "demand_history.csv")
-    terms_df  = pd.read_csv(Paths.DATA_RAW / "supplier_terms.csv")
-    inv_df    = pd.read_csv(Paths.DATA_RAW / "inventory_history.csv")
+    with get_session() as session:
+        demand_rows = (
+            session.query(DemandRecord.net_units).filter_by(sku_id=sku_id).all()
+        )
+        sku_demand = pd.Series([row[0] for row in demand_rows], dtype=float)
+        if sku_demand.empty:
+            return f"No demand history for {sku_id}."
 
-    sku_demand = demand_df[demand_df["sku_id"] == sku_id]["net_units"]
-    if sku_demand.empty:
-        return f"No demand history for {sku_id}."
+        term_row = (
+            session.query(SupplierTerm)
+            .filter(SupplierTerm.skus_supplied.contains(sku_id))
+            .first()
+        )
+        inv_row = session.query(InventorySnapshot).filter_by(sku_id=sku_id).first()
 
     avg_monthly = sku_demand.mean()
     avg_daily   = avg_monthly / 30.0
     std_monthly = sku_demand.std(ddof=0)
     std_daily   = std_monthly / 30.0
 
-    term_row = terms_df[terms_df["skus_supplied"].str.contains(sku_id, na=False)]
-    lead_time_is_assumed = term_row.empty
-    lead_time = float(term_row["lead_time_days"].iloc[0]) if not term_row.empty else 30.0
+    lead_time_is_assumed = term_row is None
+    lead_time = float(term_row.lead_time_days) if term_row is not None else 30.0
 
-    # FIX #9: scale safety stock to the lead-time window
     safety_stock = 1.64 * std_daily * (lead_time ** 0.5)   # 95% service level
     rop = avg_daily * lead_time + safety_stock
 
-    inv_row = inv_df[inv_df["sku_id"] == sku_id]
-    current = float(inv_row["total_available"].iloc[0]) if not inv_row.empty else 0
+    current = float(inv_row.total_available) if inv_row is not None else 0
 
     alert = "⚠️ REORDER NOW" if current < rop else "✓ Stock OK"
     return (
@@ -103,8 +113,8 @@ def retrieve_docs(query: str, doc_type: str = "all", k: int = 5) -> str:
     """
     Semantic search over PO and supplier catalog documents.
     doc_type: "PO", "catalog", or "all"
-    FIX #10: "all" now splits k evenly across both collections so PO results
-    can't starve out catalog results.
+    "all" splits k evenly across both collections so PO results can't
+    starve out catalog results.
     """
     from config import settings as s
     results = []
@@ -127,31 +137,27 @@ def get_supplier_info(supplier_id: str) -> str:
     """
     Retrieve full supplier information including terms, lead time, and on-time rate.
     """
-    terms = pd.read_csv(Paths.DATA_RAW / "supplier_terms.csv")
-    direc = pd.read_csv(Paths.DATA_RAW / "supplier_directory.csv")
+    with get_session() as session:
+        d = session.get(Supplier, supplier_id)
+        t = session.query(SupplierTerm).filter_by(supplier_id=supplier_id).first()
 
-    t = terms[terms["supplier_id"] == supplier_id]
-    d = direc[direc["supplier_id"] == supplier_id]
-
-    if t.empty and d.empty:
+    if d is None and t is None:
         return f"Supplier {supplier_id} not found."
 
     parts = []
-    if not d.empty:
-        r = d.iloc[0]
-        parts.append(f"Supplier: {r['supplier_name']} ({supplier_id})")
-        parts.append(f"  City: {r['city']}, {r['state']}")
-        parts.append(f"  Category: {r['category']}")
-        parts.append(f"  On-time rate: {r['on_time_rate_pct']}%")
-        parts.append(f"  Payment terms: {r['payment_terms']}")
-    if not t.empty:
-        r = t.iloc[0]
-        parts.append(f"  Lead time: {r['lead_time_days']} days")
-        parts.append(f"  MOQ: {r['min_order_qty']} units")
-        parts.append(f"  Credit: {r['credit_days']} days")
-        parts.append(f"  Advance: {r['advance_pct']}%")
-        parts.append(f"  Penalty: {r['penalty_clause']}")
-        parts.append(f"  Notes: {r['notes']}")
+    if d is not None:
+        parts.append(f"Supplier: {d.supplier_name} ({supplier_id})")
+        parts.append(f"  City: {d.city}, {d.state}")
+        parts.append(f"  Category: {d.category}")
+        parts.append(f"  On-time rate: {d.on_time_rate_pct}%")
+        parts.append(f"  Payment terms: {d.payment_terms}")
+    if t is not None:
+        parts.append(f"  Lead time: {t.lead_time_days} days")
+        parts.append(f"  MOQ: {t.min_order_qty} units")
+        parts.append(f"  Credit: {t.credit_days} days")
+        parts.append(f"  Advance: {t.advance_pct}%")
+        parts.append(f"  Penalty: {t.penalty_clause}")
+        parts.append(f"  Notes: {t.notes}")
     return "\n".join(parts)
 
 
