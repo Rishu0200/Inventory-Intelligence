@@ -3,12 +3,12 @@ scripts/train_models.py — Train all ML models.
 Runs: feature engineering → XGBoost demand model → Isolation Forest anomaly model
 Usage: python scripts/train_models.py
 """
-import sys
-import time
-from pathlib import Path
 from knowledge.feature_store.feature_engineering import load_demand, build_sku_features, save_features
 from knowledge.feature_store.demand_model import train_and_save
 from knowledge.feature_store.anomaly_model import train_isolation_forest, save_anomaly_model
+import sys
+import time
+from pathlib import Path
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
 
