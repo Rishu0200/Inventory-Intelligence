@@ -6,38 +6,36 @@ Usage: python scripts/train_models.py
 import sys
 import time
 from pathlib import Path
-
+from knowledge.feature_store.feature_engineering import load_demand, build_sku_features, save_features
+from knowledge.feature_store.demand_model import train_and_save
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
 
 def main():
     start = time.time()
+    failures = []
     print("\n🤖  Model Training Pipeline — Uninox Houseware")
     print("=" * 55)
 
     # ── Feature Engineering ───────────────────────────────────────────────────
     print("\n[1/3] Building feature matrix...")
     try:
-        from knowledge.feature_store.feature_engineering import (
-            load_demand, build_sku_features, save_features
-        )
         demand   = load_demand()
         features = build_sku_features(demand)
         save_features(features)
         print(f"  ✓ Features: {len(features)} rows, {features['sku_id'].nunique()} SKUs")
     except Exception as e:
         print(f"  ✗ Feature engineering failed: {e}")
-        return
+        sys.exit(1) 
 
     # ── Demand Model (XGBoost) ────────────────────────────────────────────────
     print("\n[2/3] Training XGBoost demand model...")
     try:
-        from knowledge.feature_store.demand_model import train_and_save
         train_and_save()
         print("  ✓ XGBoost demand model trained and saved.")
     except Exception as e:
         print(f"  ✗ Demand model training failed: {e}")
-        print("    Make sure MLflow is running: docker-compose up mlflow")
+        failures.append("demand model")
 
     # ── Anomaly Model (Isolation Forest) ──────────────────────────────────────
     print("\n[3/3] Training Isolation Forest anomaly model...")
@@ -50,15 +48,16 @@ def main():
         print("  ✓ Isolation Forest trained and saved.")
     except Exception as e:
         print(f"  ✗ Anomaly model training failed: {e}")
+        failures.append("anomaly model")
 
     elapsed = time.time() - start
     print(f"\n{'=' * 55}")
+    if failures:
+        print(f"  ❌ Failed: {', '.join(failures)} ({elapsed:.1f}s)")
+        print(f"{'=' * 55}")
+        sys.exit(1)
     print(f"  ✅ All models trained in {elapsed:.1f}s")
     print(f"{'=' * 55}")
-    print("  Models saved to: data/processed/models/")
-    print("  - demand_xgb.pkl")
-    print("  - anomaly_iso.pkl\n")
-
 
 if __name__ == "__main__":
     main()
