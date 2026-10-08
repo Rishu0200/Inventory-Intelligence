@@ -1,2 +1,2 @@
-from orchestrator.tools import check_stock 
-print(check_stock.invoke({'sku_id': 'CHM-001'}))
+from agents.reorder_agent import _scan_all_skus 
+print(_scan_all_skus())

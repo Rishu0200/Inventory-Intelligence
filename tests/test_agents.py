@@ -106,10 +106,10 @@ class TestReorderAgent:
         assert "TBP-001" in result["tool_result"] or "REORDER" in result["tool_result"]
 
     @patch("agents.reorder_agent.retrieve_docs")
-    @patch("agents.reorder_agent.pd")
-    def test_all_skus_scan_no_sku(self, mock_pd, mock_docs):
+    @patch("agents.reorder_agent.get_all_reorder_results", return_value=[])
+    @patch("agents.reorder_agent.get_session")
+    def test_all_skus_scan_no_sku(self, mock_get_session, mock_results, mock_docs):
         mock_docs.invoke.return_value = ""
-        # No SKU provided — should scan all
         state = base_state(sku_id="", query="which items need reordering?")
 
         from agents.reorder_agent import reorder_agent_node

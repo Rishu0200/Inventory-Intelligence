@@ -5,6 +5,7 @@ Checks current stock vs computed ROP and raises alerts.
 from __future__ import annotations
 import pandas as pd
 from orchestrator.tools import check_stock, compute_rop, retrieve_docs
+from orchestrator.reorder_logic import get_all_reorder_results
 from config import settings, Paths
 from db.session import get_session
 from db.models import InventorySnapshot
@@ -44,22 +45,24 @@ def _analyse_single(sku_id: str) -> str:
 
 
 def _scan_all_skus() -> str:
-    """Reads the inventory snapshot from the database, not a CSV."""
+    """Uses the same reorder-point logic as the single-SKU path."""
     try:
         with get_session() as session:
-            rows = session.query(InventorySnapshot).all()
-        alerts = [r for r in rows if r.total_available <= r.reorder_point]
+            results = get_all_reorder_results(session)
 
-        if not alerts:
+        flagged = [r for r in results if r.needs_reorder]
+        if not flagged:
             return "✓ All SKUs are above their reorder points. No immediate action needed."
 
-        lines = [f"⚠️  {len(alerts)} SKU(s) at or below reorder point:\n"]
-        for row in alerts:
-            gap = row.total_available - row.reorder_point
+        # most urgent first: lowest stock relative to its reorder point
+        flagged.sort(key=lambda r: (r.current / r.rop) if r.rop else 0)
+
+        lines = [f"⚠️  {len(flagged)} of {len(results)} SKU(s) at or below reorder point:\n"]
+        for r in flagged:
             lines.append(
-                f"  • {row.sku_id} ({row.item_name}): "
-                f"Available={row.total_available:.0f}  ROP={row.reorder_point:.0f}  "
-                f"Gap={gap:+.0f}"
+                f"  • {r.sku_id} ({r.item_name}): "
+                f"Available={r.current:.0f}  ROP={r.rop:.0f}  "
+                f"Gap={r.gap:+.0f}  [{r.source} ROP]"
             )
         return "\n".join(lines)
     except Exception as e:

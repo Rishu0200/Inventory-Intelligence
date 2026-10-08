@@ -12,7 +12,7 @@ from auth.dependencies import get_current_user
 from db.models import User, InventorySnapshot
 from db.session import get_session
 from cache.redis_client import cache_get, cache_set, cache_delete
-
+from orchestrator.reorder_logic import get_all_reorder_results
 
 router = APIRouter()
 
@@ -71,27 +71,27 @@ def _reorder_alerts() -> list[AlertItem]:
     alerts: list[AlertItem] = []
     try:
         with get_session() as session:
-            rows = session.query(InventorySnapshot).all()
+            results = get_all_reorder_results(session)
 
-            for row in rows:
-                if row.total_available > row.reorder_point:
+            for r in results:
+                if not r.needs_reorder:
                     continue
 
-                gap      = float(row.total_available - row.reorder_point)
-                severity = "high" if gap < -50 else "medium" if gap < 0 else "low"
+                ratio = (r.current / r.rop) if r.rop else 0
+                severity = "high" if ratio < -0.5 else "medium" if ratio < 0.8 else "low"
                 alerts.append(AlertItem(
-                    sku_id=str(row.sku_id),
-                    item_name=str(row.get("item_name", row.sku_id)),
-                    alert_type="reorder",
-                    severity=severity,
-                    current_stock=float(row.total_available),
-                    reorder_point=float(row.reorder_point),
-                    gap=round(gap, 1),
-                    message=(
-                        f"Stock {row.total_available:.0f} ≤ ROP {row.reorder_point:.0f}. "
-                        f"Place order immediately ({row.status or ''})."
-                    ),
-                ))
+                sku_id=r.sku_id,
+                item_name=r.item_name,
+                alert_type="reorder",
+                severity=severity,
+                current_stock=r.current,
+                reorder_point=round(r.rop, 1),
+                gap=round(r.gap, 1),
+                message=(
+                    f"Stock {r.current:.0f} ≤ ROP {r.rop:.0f} ({r.source}). "
+                    f"Place order immediately."
+                ),
+            ))
     except Exception as e:
         print(f"[alerts] Reorder scan failed: {e}")
     return alerts

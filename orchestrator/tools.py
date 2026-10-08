@@ -4,7 +4,7 @@ LangChain @tool definitions.
 from __future__ import annotations
 import pandas as pd
 from langchain_core.tools import tool
-
+from orchestrator.reorder_logic import get_reorder_result
 from config import Paths
 from db.session import get_session
 from db.models import InventorySnapshot, DemandRecord, SupplierTerm, Supplier
@@ -44,66 +44,54 @@ def check_stock(sku_id: str) -> str:
     """
     with get_session() as session:
         r = session.query(InventorySnapshot).filter_by(sku_id=sku_id).first()
+        res = get_reorder_result(session, sku_id) if r is not None else None
 
-    if r is None:
-        return f"SKU {sku_id} not found in inventory."
+        if r is None or res is None:
+            return f"SKU {sku_id} not found in inventory."
 
-    rop_gap = r.total_available - r.reorder_point
-    alert   = "⚠️ REORDER NEEDED" if rop_gap <= 0 else "✓ OK"
-    return (
-        f"Inventory — {sku_id} ({r.item_name}):\n"
-        f"  On-Hand: {r.qty_on_hand}  |  WIP: {r.qty_wip}  |  In-Transit: {r.qty_in_transit}\n"
-        f"  Total Available: {r.total_available}  |  Reorder Point: {r.reorder_point}\n"
-        f"  Days of Stock: {r.days_of_stock}  |  Status: {r.status}\n"
-        f"  Gap vs ROP: {rop_gap:+.0f} units  — {alert}"
-    )
+        alert   = "⚠️ REORDER NEEDED" if res.needs_reorder else "✓ OK"
+        return (
+            f"Inventory — {sku_id} ({r.item_name}):\n"
+            f"  On-Hand: {r.qty_on_hand}  |  WIP: {r.qty_wip}  |  In-Transit: {r.qty_in_transit}\n"
+            f"  Total Available: {r.total_available}  |  Reorder Point: {r.reorder_point}({res.source})\n"
+            f"  Days of Stock: {r.days_of_stock}  |  Status: {r.status}\n"
+            f"  Gap vs ROP: {res.gap:+.0f} units  — {alert}"
+        )
 
 
 @tool
 def compute_rop(sku_id: str) -> str:
     """
-    Compute the Reorder Point (ROP) for a SKU using:
+    Compute the Reorder Point (ROP) for a SKU:
     ROP = (avg_daily_demand × lead_time_days) + safety_stock
-    Safety stock scales demand variability to the lead-time window
-    (std_daily × sqrt(lead_time_days)) instead of using raw monthly std.
+    Safety stock scales demand variability to the lead-time window.
+    SKUs with no demand history use the inventory table's reorder point.
     """
     with get_session() as session:
-        demand_rows = (
-            session.query(DemandRecord.net_units).filter_by(sku_id=sku_id).all()
+        res = get_reorder_result(session, sku_id)
+
+    if res is None:
+        return f"SKU {sku_id} not found in inventory."
+
+    alert = "⚠️ REORDER NOW" if res.needs_reorder else "✓ Stock OK"
+
+    if res.source == "static":
+        return (
+            f"ROP Analysis — {sku_id}:\n"
+            f"  No demand history, so using the inventory table's reorder point.\n"
+            f"  Reorder point: {res.rop:.0f} units\n"
+            f"  Current available: {res.current:.0f} units\n"
+            f"  {alert}"
         )
-        sku_demand = pd.Series([row[0] for row in demand_rows], dtype=float)
-        if sku_demand.empty:
-            return f"No demand history for {sku_id}."
 
-        term_row = (
-            session.query(SupplierTerm)
-            .filter(SupplierTerm.skus_supplied.contains(sku_id))
-            .first()
-        )
-        inv_row = session.query(InventorySnapshot).filter_by(sku_id=sku_id).first()
-
-    avg_monthly = sku_demand.mean()
-    avg_daily   = avg_monthly / 30.0
-    std_monthly = sku_demand.std(ddof=0)
-    std_daily   = std_monthly / 30.0
-
-    lead_time_is_assumed = term_row is None
-    lead_time = float(term_row.lead_time_days) if term_row is not None else 30.0
-
-    safety_stock = 1.64 * std_daily * (lead_time ** 0.5)   # 95% service level
-    rop = avg_daily * lead_time + safety_stock
-
-    current = float(inv_row.total_available) if inv_row is not None else 0
-
-    alert = "⚠️ REORDER NOW" if current < rop else "✓ Stock OK"
     return (
         f"ROP Analysis — {sku_id}:\n"
-        f"  Avg daily demand: {avg_daily:.1f} units\n"
-        f"  Lead time: {lead_time:.0f} days"
-        f"{' (assumed — no supplier record found)' if lead_time_is_assumed else ''}\n"
-        f"  Safety stock (95% SL): {safety_stock:.0f} units\n"
-        f"  Computed ROP: {rop:.0f} units\n"
-        f"  Current available: {current:.0f} units\n"
+        f"  Avg daily demand: {res.avg_daily:.1f} units\n"
+        f"  Lead time: {res.lead_time:.0f} days"
+        f"{' (assumed — no supplier record found)' if res.lead_time_assumed else ''}\n"
+        f"  Safety stock (95% SL): {res.safety_stock:.0f} units\n"
+        f"  Computed ROP: {res.rop:.0f} units\n"
+        f"  Current available: {res.current:.0f} units\n"
         f"  {alert}"
     )
 
