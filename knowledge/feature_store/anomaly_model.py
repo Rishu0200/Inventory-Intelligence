@@ -58,7 +58,8 @@ def train_isolation_forest(contamination: float = 0.05) -> tuple:
 
 def save_anomaly_model(model: IsolationForest, scaler: StandardScaler):
     from storage.r2_client import upload_bytes
-    upload_bytes("anomaly_iso.pkl", pickle.dumps({"model": model, "scaler": scaler}))
+    if not upload_bytes("anomaly_iso.pkl", pickle.dumps({"model": model, "scaler": scaler})):
+        raise RuntimeError("Upload of anomaly_iso.pkl to model storage failed")
     print("[anomaly_model] Saved → anomaly_iso.pkl")
 
 

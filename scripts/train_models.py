@@ -8,6 +8,7 @@ import time
 from pathlib import Path
 from knowledge.feature_store.feature_engineering import load_demand, build_sku_features, save_features
 from knowledge.feature_store.demand_model import train_and_save
+from knowledge.feature_store.anomaly_model import train_isolation_forest, save_anomaly_model
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
 
@@ -40,9 +41,6 @@ def main():
     # ── Anomaly Model (Isolation Forest) ──────────────────────────────────────
     print("\n[3/3] Training Isolation Forest anomaly model...")
     try:
-        from knowledge.feature_store.anomaly_model import (
-            train_isolation_forest, save_anomaly_model
-        )
         model, scaler = train_isolation_forest(contamination=0.05)
         save_anomaly_model(model, scaler)
         print("  ✓ Isolation Forest trained and saved.")

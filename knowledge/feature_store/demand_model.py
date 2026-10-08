@@ -58,7 +58,8 @@ def train_xgboost(features: pd.DataFrame) -> xgb.XGBRegressor:
 
 def save_model(model: xgb.XGBRegressor, name: str = "demand_xgb.pkl") -> None:
     from storage.r2_client import upload_bytes
-    upload_bytes(name, pickle.dumps(model))
+    if not upload_bytes(name, pickle.dumps(model)):
+        raise RuntimeError(f"Upload of {name} to model storage failed")
     print(f"[demand_model] Saved model → {name}")
 
 
