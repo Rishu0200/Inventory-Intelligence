@@ -3,9 +3,7 @@ scripts/train_models.py — Train all ML models.
 Runs: feature engineering → XGBoost demand model → Isolation Forest anomaly model
 Usage: python scripts/train_models.py
 """
-from knowledge.feature_store.feature_engineering import load_demand, build_sku_features, save_features
-from knowledge.feature_store.demand_model import train_and_save
-from knowledge.feature_store.anomaly_model import train_isolation_forest, save_anomaly_model
+
 import sys
 import time
 from pathlib import Path
@@ -21,6 +19,8 @@ def main():
     # ── Feature Engineering ───────────────────────────────────────────────────
     print("\n[1/3] Building feature matrix...")
     try:
+        
+        from knowledge.feature_store.feature_engineering import load_demand, build_sku_features, save_features
         demand   = load_demand()
         features = build_sku_features(demand)
         save_features(features)
@@ -32,6 +32,7 @@ def main():
     # ── Demand Model (XGBoost) ────────────────────────────────────────────────
     print("\n[2/3] Training XGBoost demand model...")
     try:
+        from knowledge.feature_store.demand_model import train_and_save
         train_and_save()
         print("  ✓ XGBoost demand model trained and saved.")
     except Exception as e:
@@ -41,6 +42,7 @@ def main():
     # ── Anomaly Model (Isolation Forest) ──────────────────────────────────────
     print("\n[3/3] Training Isolation Forest anomaly model...")
     try:
+        from knowledge.feature_store.anomaly_model import train_isolation_forest, save_anomaly_model
         model, scaler = train_isolation_forest(contamination=0.05)
         save_anomaly_model(model, scaler)
         print("  ✓ Isolation Forest trained and saved.")
