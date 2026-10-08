@@ -15,6 +15,7 @@ def _build_engine():
 
     if url.startswith("sqlite"):
         # SQLite needs this flag to be usable across FastAPI's threaded requests
+        Paths.DATA_PROCESSED.mkdir(parents=True, exist_ok=True)
         return create_engine(url, connect_args={"check_same_thread": False})
 
     # Neon/Supabase are serverless Postgres — pool_pre_ping avoids errors from
@@ -30,7 +31,9 @@ def _build_engine():
 
 
 engine = _build_engine()
-SessionLocal = sessionmaker(bind=engine, autoflush=False, autocommit=False)
+SessionLocal = sessionmaker(
+    bind=engine, autoflush=False, autocommit=False, expire_on_commit=False
+)
 
 
 def init_db() -> None:

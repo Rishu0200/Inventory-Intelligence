@@ -3,7 +3,7 @@ name: Nightly Model Retraining
 on:
   schedule:
     - cron: "0 2 * * *"    # 2 AM UTC nightly
-  workflow_dispatch:         # lets you trigger manually from the Actions tab
+  workflow_dispatch:         
 
 jobs:
   retrain:
