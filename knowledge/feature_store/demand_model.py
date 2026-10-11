@@ -23,6 +23,7 @@ TARGET_COL   = "net_units"
 
 def train_xgboost(features: pd.DataFrame) -> xgb.XGBRegressor:
     """Train a single XGBoost model on all SKUs using time-series CV."""
+    features = features.sort_values(["period", "sku_id"]).reset_index(drop=True)
     X = features[FEATURE_COLS].values
     y = features[TARGET_COL].values
 

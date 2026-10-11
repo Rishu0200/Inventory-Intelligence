@@ -1,238 +1,276 @@
-# 📦 Inventory Intelligence System
+# Inventory Intelligence System
 
-> **An end-to-end Agentic AI + RAG system for supply chain management**
-> Built on real Uninox Houseware data — demand forecasting, reorder alerts, supplier intelligence, and anomaly detection through a natural language interface.
+An agentic AI + RAG assistant for supply chain inventory management. Ask in plain language
+for demand forecasts, reorder alerts, supplier recommendations, or demand anomalies; a
+LangGraph router sends the question to a specialist agent that combines classical ML models,
+SQL lookups, and document retrieval.
 
-[![Python 3.11](https://img.shields.io/badge/Python-3.11-blue?logo=python&logoColor=white)](https://python.org)
-[![LangGraph](https://img.shields.io/badge/LangGraph-0.2-orange)](https://langchain-ai.github.io/langgraph/)
-[![FastAPI](https://img.shields.io/badge/FastAPI-0.115-009688?logo=fastapi)](https://fastapi.tiangolo.com)
-[![Streamlit](https://img.shields.io/badge/Streamlit-1.38-FF4B4B?logo=streamlit)](https://streamlit.io)
-[![Render](https://img.shields.io/badge/Deploy-Render-46E3B7)](https://render.com)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow)](LICENSE)
+Modeled on the operations of an Indian kitchen-hardware manufacturer (Uninox Houseware).
+The datasets are small and illustrative, so treat every figure the app returns as sample data.
 
-**Live Demo** → `https://inventory-intelligence-ui.onrender.com`
-**API Docs** → `https://inventory-intelligence-api.onrender.com/docs`
+**API docs:** `https://inventory-intelligence.onrender.com/docs`
+**Live app:** `https://inventory-intelligence-app.streamlit.app/` 
 
----
-
-## The Problem
-
-Inventory mismanagement costs Indian manufacturers 25–30% of working capital in either excess stock or stockout losses. At Aashi Enterprises (Uninox Houseware), I observed this firsthand — reorder decisions were made on gut feel, supplier selection was tribal knowledge locked in people's heads, and demand spikes were only noticed after stockouts had already happened.
-
-This project is my answer: a production-ready intelligent inventory system that any warehouse manager can query in plain language to get actionable, data-backed answers.
+Both run on free tiers, so the first request after a quiet period can take about a minute
+while the services wake up.
 
 ---
 
-## What It Can Do
+## What you can ask
 
-| Query | What happens |
+| Question | What happens |
 |---|---|
-| *"Forecast demand for TBP-001 next 3 months"* | XGBoost predicts with 90% confidence intervals |
-| *"Which SKUs need reordering right now?"* | Scans all 23 SKUs against computed ROP, returns prioritised alerts |
-| *"Who is the best supplier for RSH-001?"* | RAG retrieves catalog terms, ranks by lead time and on-time rate |
-| *"Any unusual demand patterns this quarter?"* | Isolation Forest flags outliers with root-cause context from PO history |
+| "Forecast demand for TBP-001 next 3 months" | XGBoost forecast with 90% intervals |
+| "Which SKUs need reordering?" | Compares stock against a reorder point computed from demand and supplier lead time |
+| "Who is the best supplier for RSH-001?" | Looks up supplier terms in Postgres, ranks suppliers by lead time and on-time rate, and adds catalog context from the vector store |
+| "Any unusual demand this quarter?" | Isolation Forest flags outlier months |
+
+---
+
+## Results
+
+All numbers were measured on this project's data. The sample sizes are small, and each note says what it does and doesn't show.
+
+| Area | Result | Note |
+|---|---|---|
+| Demand forecast | Mean RMSE **138.7** vs **180.6** for a last-month baseline (**23% lower**) | 3-fold chronological cross-validation, 416 rows, 16 SKUs. The model beat the baseline in every fold (184.9/114.8/116.3 vs 192.0/149.8/200.0). The margin is much smaller in the first fold. |
+| Reorder logic | Scan-all went from 0 to **2 of 23** SKUs flagged | Both code paths now share one reorder-point calculation. Before, "scan all" used a static table column while single-SKU lookups computed it. |
+| Intent routing | 100% intent and 100% SKU-extraction accuracy | 12 labeled queries |
+| Retrieval | 57% hit-rate (4 of 7 checkable queries) | Pure semantic search is weak at exact SKU codes. Metadata filtering is the likely fix. |
+| Groundedness (LLM-as-judge) | 91.7% on the latest run | 12 queries. The judge is non-deterministic, so recent runs ranged from roughly 83% to 100%. Look at the trend, not a single run. |
+| Tests | **43** automated tests, all passing | API and agent layers run against mocked services |
+| Alerts latency | Median 5.1 s uncached, 0.8 s cached | Free-tier Render, 3 and 5 requests |
+| Chat latency | Median 7.4 s | 8 requests, including the LLM call and retrieval |
+| Memory | About 218 MB resident locally | Measured on Windows. The 512 MB free-tier limit is a design target, and Render's free tier doesn't show memory usage, so it hasn't been confirmed there. |
 
 ---
 
 ## Architecture
 
 ```
-DATA SOURCES (6 CSVs — 512 demand records, 224 POs, 12 suppliers)
-         |
-         +---> RAG Pipeline                    ML Pipeline
-               PDF Generation                 Feature Engineering
-               (207 PDFs via Faker+ReportLab) (lag-1/3/6, rolling stats)
-               Parse -> Chunk -> Deduplicate   XGBoost Demand Forecast
-               ChromaDB (700+ chunks)          Isolation Forest Anomaly
-                         |                              |
-                         +----------+  +----------------+
-                                    |  |
-                          LangGraph Orchestrator
-                          router.py | graph.py | tools.py
-                                    |
-                     +--------------+--------------+
-                     |         |         |         |
-                  Demand  Reorder  Supplier  Anomaly
-                  Agent   Agent    Agent     Agent
-                                    |
-                             FastAPI (Render)
-                          /query | /alerts | /forecast
-                                    |
-                          Streamlit Dashboard (Render)
-                    Chat UI | Forecast Charts | Stock Table
+Streamlit Cloud (frontend)
+        |  HTTPS + JWT bearer token
+        v
+Render (FastAPI, free tier, single worker)
+        |
+        |-- Supabase Postgres ------ SKUs, suppliers, demand, POs, users
+        |-- Chroma Cloud ----------- vector store (PO + supplier-catalog chunks)
+        |-- Supabase Storage ------- trained model files (S3-compatible API)
+        |-- Upstash Redis (opt.) --- alert cache, rate limiting
+        '-- Groq ------------------- LLM for answer synthesis and intent fallback
+
+GitHub Actions (nightly, 02:00 UTC)
+        '-- retrain models -> run eval harness -> upload models to Storage
 ```
 
----
+Render's free tier has no persistent disk, so nothing stateful lives in the API container.
+It rebuilds its working state from Postgres, Chroma Cloud, and Storage on every cold start.
 
-## Tech Stack
-
-| Layer | Technology | Why This Choice |
-|---|---|---|
-| Agentic AI | LangGraph 0.2 | StateGraph with conditional routing — not a linear chain |
-| LLM | Groq + Llama 3.3 70B | Free tier, 6K tokens/min, fastest inference available |
-| RAG | ChromaDB + all-MiniLM-L6-v2 | Local persistence, no API key, 22MB embedding model |
-| Demand Forecasting | XGBoost + ARIMA | XGBoost for multi-feature; ARIMA for univariate baseline |
-| Anomaly Detection | Isolation Forest | Unsupervised, handles unlabelled inventory data |
-| Experiment Tracking | MLflow | Local tracking, no hosted service needed |
-| API | FastAPI + Uvicorn | Async, auto OpenAPI docs, Pydantic v2 validation |
-| Frontend | Streamlit + Plotly | Fastest path from API to interactive dashboard |
-| Data Synthesis | Faker + ReportLab + SDV | Generates realistic PDFs and correlated tabular data |
-| Deployment | Render free tier | Docker-based, CI/CD from GitHub, zero cost |
+### How a query flows
+1. **Router** scores the question against keyword lists for four intents. Ties go to an
+   explicit priority order, and the LLM classifies only when no keyword matches.
+2. **Agent** (demand, reorder, supplier, anomaly, or a general-help node) calls its tools:
+   forecast, stock and reorder-point check, supplier lookup, anomaly detection, and
+   document retrieval.
+3. **Synthesiser** has the LLM write the answer from the tool output and retrieved context,
+   with an instruction not to relabel historical periods as "current". With
+   `DEMO_MODE=true` it returns the tool output directly and needs no API key.
 
 ---
 
-## Project by the Numbers
+## Tech stack
 
-| Metric | Value |
+| Layer | Technology |
 |---|---|
-| Python files | 42 |
-| Lines of code | 3,503 |
-| SKUs tracked | 23 (16 finished goods + 7 raw materials) |
-| Demand records | 512 (Sep 2022 – Apr 2025) |
-| Purchase orders | 224 |
-| Suppliers | 12 |
-| Generated PDF documents | 207 (200 POs + 7 catalogs) |
-| ChromaDB chunks | 700+ |
-| LangGraph nodes | 6 |
-| LangChain @tools | 6 |
-| API endpoints | 6 |
-| Jupyter notebooks | 3 |
-| Pytest test cases | 22 |
-| Monthly deployment cost | Rs 0 |
+| Orchestration | LangGraph |
+| LLM | Groq (default `openai/gpt-oss-120b`, set with `GROQ_MODEL`) |
+| Vector store | Chroma Cloud with chromadb's built-in ONNX MiniLM embeddings (no PyTorch) |
+| Forecasting | XGBoost (lag, rolling, and calendar features; recursive multi-step) |
+| Anomaly detection | Isolation Forest (`contamination=0.05`, unsupervised) |
+| Database | PostgreSQL on Supabase via SQLAlchemy 2.0 |
+| Model storage | Supabase Storage via the S3 API (boto3) |
+| Cache / rate limits | Upstash Redis (REST), with an in-process fallback |
+| Auth | JWT (PyJWT) with Argon2id password hashing |
+| API | FastAPI + Uvicorn |
+| Frontend | Streamlit (API-only, no direct database access) |
+| CI | GitHub Actions |
+| Python | 3.11 |
 
 ---
 
-## Project Structure
+## Project structure
 
 ```
-inventory-intelligence/
-├── config.py                     Central settings — imported everywhere
-├── requirements.txt              Local dev (full stack)
-├── render.yaml                   Both services configured
-├── .streamlit/config.toml        Streamlit production settings
-├── data/
-│   ├── raw/                      6 Uninox Houseware source CSVs
-│   ├── synthetic/                207 generated PDFs (local only)
-│   └── processed/                Committed to repo for Render
-│       ├── chroma_store/         Pre-built vector embeddings (~8 MB)
-│       ├── models/               Trained XGBoost + IsoForest (~5 MB)
-│       └── features.parquet      Pre-computed feature matrix
-├── data_generation/              Faker + ReportLab + SDV scripts
-├── ingestion/                    PDF parser > chunker > deduplicator
-├── knowledge/
-│   ├── vector_store/             ChromaDB embedder + retriever
-│   └── feature_store/            Feature engineering + ML models + MLflow
-├── agents/                       4 LangGraph agent nodes
-├── orchestrator/                 StateGraph + router + tools + LLM factory
-├── api/                          FastAPI: main, schemas, 3 route files
-├── frontend/                     Streamlit dashboard + requirements
-├── scripts/                      setup.py, ingest_docs.py, train_models.py
-├── tests/                        22 pytest tests
-└── notebooks/                    EDA, forecasting, anomaly detection
+.
+|-- config.py                      Settings (pydantic-settings)
+|-- requirements-api.txt           Render: lean, inference only
+|-- requirements-train.txt         GitHub Actions: adds mlflow, boto3
+|-- requirements-dev.txt           Local: adds data generation, ingestion, pytest
+|-- runtime.txt / .python-version  Python 3.11 pin
+|
+|-- api/                           FastAPI app, schemas, rate limiting, routes
+|-- auth/                          Password hashing, JWT creation/verification
+|-- db/                            SQLAlchemy models, session, CSV-to-Postgres migration
+|-- cache/                         Redis wrapper (cache + rate limit)
+|-- storage/                       S3-compatible model storage
+|-- orchestrator/                  LangGraph graph, router, tools, reorder logic, LLM factory
+|-- agents/                        demand / reorder / supplier / anomaly nodes
+|-- knowledge/
+|   |-- vector_store/              Chroma embed + retrieve (cached client, retries)
+|   '-- feature_store/             Feature engineering, XGBoost, Isolation Forest
+|-- ingestion/                     PDF parse -> chunk -> MinHash dedupe
+|-- data_generation/               Synthetic PO and catalog PDFs, tabular extension
+|-- eval/                          Intent, retrieval, and groundedness evaluation
+|-- scripts/                       ingest_docs, train_models, create_user, setup
+|-- frontend/                      Streamlit app and its own requirements.txt
+|-- tests/                         43 tests (pytest)
+'-- .github/workflows/retrain.yml  Nightly retrain + eval
 ```
 
 ---
 
-## Quick Start
+## Local setup
 
 ```bash
 git clone https://github.com/Rishu0200/Inventory-Intelligence.git
-cd inventory-intelligence
-python -m venv .venv && source .venv/bin/activate
-pip install -r requirements.txt
-cp .env.example .env        # Add GROQ_API_KEY from console.groq.com
-python scripts/setup.py     # ~5 min: generates PDFs, embeds, trains models
-uvicorn api.main:app --reload --port 8000   # Terminal 1
-streamlit run frontend/app.py               # Terminal 2
+cd Inventory-Intelligence
+python -m venv venv
+venv\Scripts\activate                  # macOS/Linux: source venv/bin/activate
+pip install -r requirements-dev.txt
+cp .env.example .env                   # fill in values (see below)
 ```
 
----
+**Input data.** `data/raw/*.csv` is gitignored, so a fresh clone doesn't include it. The
+migration reads five files from `data/raw/`: `demand_history.csv`, `inventory_history.csv`,
+`purchase_orders.csv`, `supplier_directory.csv`, `supplier_terms.csv`. Dates are
+day-first (DD-MM-YYYY).
 
-## API Reference
+```bash
+python -m db.migrate_csv_to_db            # CSVs -> Postgres (safe to re-run)
+python -m data_generation.generate_pos
+python -m data_generation.generate_supplier_docs
+python -m scripts.ingest_docs             # PDFs -> Chroma
+python scripts/train_models.py            # models -> Storage (exits non-zero on failure)
+python -m scripts.create_user             # create a login
 
-| Method | Endpoint | Description |
-|---|---|---|
-| GET | `/ping` | Health — model status + ChromaDB chunk count |
-| POST | `/api/query` | Natural language query |
-| POST | `/api/query/stream` | Streaming SSE version |
-| GET | `/api/alerts` | All reorder + anomaly alerts |
-| GET | `/api/forecast/{sku_id}` | Demand forecast + confidence intervals |
-| GET | `/api/forecast` | Forecast for all SKUs |
+uvicorn api.main:app --reload --port 8000     # terminal 1
+streamlit run frontend/app.py                 # terminal 2
+```
+
+With no cloud credentials set, the app falls back to local SQLite, an in-process cache, and
+local model files, so you can run a reduced version offline. `DEMO_MODE=true` skips the
+LLM entirely.
 
 ---
 
 ## Configuration
 
-| Variable | Default | Description |
-|---|---|---|
-| `LLM_PROVIDER` | `groq` | groq / ollama / openai / gemini |
-| `GROQ_API_KEY` | — | Free from console.groq.com |
-| `DEMO_MODE` | `false` | true = rule-based, no LLM calls |
-| `API_BASE_URL` | `http://localhost:8000` | Set to Render URL for frontend |
+Settings come from `.env`; see `.env.example` for the full annotated list. These are the
+ones that cause problems:
+
+| Variable | Notes |
+|---|---|
+| `JWT_SECRET_KEY` | Required. Generate with `python -c "import secrets; print(secrets.token_hex(32))"`. If it's empty, login is refused. |
+| `DATABASE_URL` | Use the Supabase **Session Pooler** string (the direct connection is IPv6-only). Make the driver explicit: `postgresql+psycopg2://...?sslmode=require`. |
+| `CHROMA_CLOUD_TENANT` / `CHROMA_CLOUD_DATABASE` | The tenant is the UUID. The database is the name you chose. They're easy to swap by accident. |
+| `R2_*` | Names are historical. Any S3-compatible provider works (Supabase Storage here). |
+| `REDIS_URL` / `REDIS_TOKEN` | Optional. Use Upstash's REST URL and token, not the `rediss://` string. |
+| `GROQ_MODEL` | Groq retires models. If you get `model_not_found`, check their deprecations page. |
+
+If you change the embedding model, wipe and re-ingest both Chroma collections. Vectors from
+different models aren't comparable, and Chroma rejects the mismatch.
 
 ---
 
-## Challenges and Solutions
+## API
 
-**1. No real supply chain data available**
-Supply chain PO documents and demand history are proprietary. Built a complete synthetic data pipeline using Faker for realistic Indian supplier details (GSTIN, city, contact names), ReportLab for structured PDF generation, and SDV GaussianCopulaSynthesizer for statistically correlated tabular data that preserves demand-stockout correlation and lead-time distributions.
+| Method | Path | Auth | Description |
+|---|---|---|---|
+| GET | `/ping` | none | Health: models loaded, vector-store chunk count |
+| POST | `/api/auth/login` | none | Form fields `username` (email) and `password`; returns a JWT. Limited to 10 attempts/min per email. |
+| POST | `/api/query` | JWT | Natural-language query. Limited to 10/min per user and 25/min overall. |
+| POST | `/api/query/stream` | JWT | Same, as server-sent events. It streams the finished answer word by word; it is not token streaming. |
+| GET | `/api/alerts?refresh=` | JWT | Reorder and anomaly alerts, cached for 10 minutes |
+| GET | `/api/forecast/{sku_id}?horizon=` | JWT | Forecast with 90% intervals (1-12 months) |
+| GET | `/api/forecast?horizon=` | JWT | Forecast for every SKU (1-6 months) |
+| GET | `/api/skus`, `/api/inventory`, `/api/demand/{sku_id}` | JWT | Data endpoints used by the dashboard |
 
-**2. RAM exceeded Render free tier (512 MB)**
-Full requirements install sdv which pulls PyTorch (2.1 GB disk, ~300 MB RAM). Total estimated runtime RAM was ~650 MB. Solution: three requirements files — requirements.txt for local dev, requirements-api.txt for Render API (16 lean packages, ~420 MB), and frontend/requirements.txt for Streamlit. Each environment gets exactly what it needs.
-
-**3. ChromaDB wiped on every Render redeploy**
-Render free tier uses ephemeral disk. Solution: run ingestion locally once, commit the pre-built chroma_store (~8 MB) and trained model artifacts to the GitHub repo. Updated .gitignore to not ignore these. Render deploys from the committed knowledge base on every push.
-
-**4. mlflow ImportError crashing production API**
-import mlflow at the top of demand_model.py caused ImportError on Render because mlflow is not in requirements-api.txt. Solution: moved mlflow to a lazy import inside train_and_save() only, wrapped in try/except. The production API never calls train_and_save() — only forecast_sku() and load_model() which are mlflow-free.
-
-**5. Render cold start killing demo experience**
-Free tier spins down after 15 minutes. Solution: UptimeRobot pings /ping every 14 minutes for the API and /healthz for the frontend. Background thread model loading ensures health check responds instantly while models load in parallel.
-
-**6. LLM cost for a portfolio project**
-OpenAI charges per token. Multiple agent calls per query make it expensive for a free demo. Solution: llm_factory.py supports Groq (free: 30 req/min, 6K tokens/min), Ollama (local), OpenAI, and Gemini. Default is Groq llama-3.3-70b-versatile — faster than GPT-3.5 and completely free.
-
-**7. Intent routing failing on multi-intent queries**
-Pure keyword matching breaks on conversational queries like "I want to order RSH-001, who is the cheapest supplier?" Solution: two-tier routing — keyword scoring first (fast, free, handles ~85% of queries), LLM fallback only for ambiguous cases.
+Interactive docs are at `/docs`, and the **Authorize** button logs in with your account.
 
 ---
 
-## Known Limitations
-
-**Data** — Synthetic demand patterns lack real-world complexity: Diwali spikes, GST quarter-end effects, and promotional events are not captured. A production deployment needs actual ERP data export.
-
-**Static knowledge base** — Adding new documents requires local re-ingestion and a redeploy. No real-time /upload endpoint exists.
-
-**No API authentication** — The REST API is publicly accessible. A production system needs JWT tokens or API key middleware.
-
-**Single worker** — Render free tier runs one worker (0.1 vCPU). High concurrent traffic causes timeouts.
-
-**Fixed anomaly contamination** — Isolation Forest contamination=0.05 was set empirically. Production would need dynamic tuning based on observed anomaly rates.
-
-**ARIMA for simple seasonality** — ARIMA(1,1,1) baseline does not capture multi-seasonal patterns. Facebook Prophet or hierarchical time-series models would improve accuracy.
-
-**ChromaDB committed to repo** — Works for 207 documents (~8 MB). Does not scale to thousands of documents — a hosted vector DB would be needed.
-
-**No feedback loop** — Cannot learn from whether recommendations were acted upon. A production system would log query → action → outcome for continuous improvement.
-
----
-
-## Running Tests
+## Testing and evaluation
 
 ```bash
-pytest tests/ -v    # 22 tests, ~4s
+python -m pytest tests/ -q                # 43 tests, external services mocked
+
+python -m eval.intent_eval                # fast, no LLM
+python -m eval.retrieval_eval             # needs Chroma populated
+python -m eval.run_eval                   # full harness, logs to the eval_runs table
 ```
 
----
-
-## About the Author
-
-**Rishabh Anand** — Data Scientist with real supply chain domain expertise. Former Supply Chain and Operations Executive , managing supplier payments, raw material procurement, and international export documentation (Commercial Invoices, LC, SAFTA certificates). GATE 2023 qualified (90th percentile, ECE). This project bridges two years of hands-on supply chain experience with applied ML and agentic AI.
-
-Email: Rishabhanand0200@gmail.com
+The harness runs nightly in CI, so quality can be tracked over time. The groundedness judge
+is given the same context the synthesiser used (tool output plus retrieved documents).
+Early on it saw only the retrieved documents and reported a misleadingly low score.
 
 ---
+
+## Deployment
+
+**API (Render).** Build command `pip install -r requirements-api.txt`. Start command
+`uvicorn api.main:app --host 0.0.0.0 --port $PORT --workers 1`. Health check path `/ping`.
+Set `PYTHON_VERSION=3.11.9` and add every secret from `.env.example` in the dashboard.
+Check the build log for the Python version it actually used.
+
+**Frontend (Streamlit Community Cloud).** Main file `frontend/app.py`, which reads
+`frontend/requirements.txt`. The only secret is `API_BASE_URL = "https://<your-render-url>"`.
+
+**Nightly job (GitHub Actions).** Add the same secrets as repository secrets
+(`DATABASE_URL`, `R2_*`, `GROQ_API_KEY`, `CHROMA_CLOUD_*`). You can trigger it manually from
+the Actions tab. A failed training stage now fails the run.
+
+---
+
+## Problems found and fixed
+
+- **Date parsing:** pandas' default inference misparsed or nulled 210 of 224 day-first PO dates. The migration now forces day-first.
+- **Inconsistent reorder points:** the scan-all path and the single-SKU path used different definitions. A single shared module now decides.
+- **Forecast features:** multi-step forecasts advanced only the first lag, leaving calendar and rolling features frozen. They now advance every step.
+- **Forecast validation:** features were stacked SKU by SKU, so cross-validation wasn't chronological. Rows are now sorted by period first.
+- **Safety stock:** it didn't scale to supplier lead time. It now uses daily deviation times the square root of lead time.
+- **Silent failures:** a pandas merge with overlapping column names raised a `KeyError` that a bare `except` swallowed, so supplier recommendations were always empty. They now use an explicit SQL join.
+- **Session expiry:** objects were read after their session closed. The session factory now sets `expire_on_commit=False`.
+- **Green CI on failure:** the training script swallowed errors. It now exits non-zero.
+
+---
+
+## Known limitations
+
+- **Small, illustrative data:** 512 demand records over about 2.5 years, 16 SKUs with demand history. Real seasonality and promotions aren't captured.
+- **Forecast horizon:** it counts from the last month in the data (April 2025), not from today.
+- **Reorder points:** a normal-demand, 95% service-level approximation. SKUs with no demand history, such as raw materials, fall back to the static table value.
+- **Retrieval:** weak on exact SKU codes (57% on the checkable queries). Structured questions are answered from SQL, and RAG supplies supporting document context.
+- **Latency:** chat answers took about 7 s at the median, and cold starts take about a minute on both free tiers.
+- **Not load-tested:** only sequential requests were measured, and memory on Render is unverified.
+- **Auth:** one 12-hour access token with no refresh or revocation. Login limiting is keyed by email, so someone could briefly lock out a colleague's account.
+- **Operations:** no admin UI (users are created with `scripts/create_user.py`) and a single API worker.
+- **Evaluation:** 12 labeled queries and a non-deterministic LLM judge, so small score changes are noise.
+- **Anomaly detection:** unsupervised, with no labeled anomalies to measure against.
+
+## Roadmap
+
+- Write thumbs up/down feedback to the `query_logs` table and use it to grow the eval set.
+- Filter retrieval by SKU metadata to improve the hit-rate.
+- Load-test concurrent users and check memory on Render.
+- Share one model-loading path across the API modules (the model is currently loaded in three places).
+- Refresh tokens and an admin page for user management.
+
+---
+
+## Author
+
+Built by Rishabh Anand. [https://www.linkedin.com/in/rishabh-anand-844097211/](#) | [GitHub](https://github.com/Rishu0200)
 
 ## License
 
-MIT — free to use, fork, and build upon.
+MIT
